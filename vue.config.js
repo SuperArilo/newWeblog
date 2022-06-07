@@ -22,6 +22,7 @@ module.exports = {
     publicPath: '/',
     productionSourceMap: false,
     chainWebpack: config => {
+        config.resolve.symlinks(true)
         config.plugin('html').tap(args => {
             if (isProduction || devNeedCdn) args[0].cdn = cdn
             return args
