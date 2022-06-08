@@ -3,7 +3,7 @@
         <nav class="top-nav-pc" v-if="!this.$store.getters.isPhone">
             <span class="left-name">鸽王BLOG</span>
             <ul class="menu-list">
-                <li class="menu-list-item" v-ripple="{ duration: 500, color: this.$store.getters.darkModel ? 'invert' : ''}" v-for="item in menuList" :key="item.id">{{item.title}}</li>
+                <li class="menu-list-item" v-ripple="{ duration: 500, color: this.$store.getters.darkModel ? 'invert' : ''}" v-for="item in menuList" :key="item.id" @click="menuListFunc(item.id)" :class="this.menuListIndex === item.id ? 'menu-list-item-active' : ''">{{item.title}}</li>
             </ul>
             <div class="right-button">
                 <div class="dark-button" v-ripple="{ duration: 500, color: this.$store.getters.darkModel ? 'invert' : ''}" @click="chagenDarkModel">
@@ -83,13 +83,7 @@ export default {
         start()
         this.windowWidth()
         window.addEventListener('resize', this.windowWidth)
-        window.addEventListener('beforeunload', () => {
-            let json = {
-                uid: '',
-                darkModel: this.$store.getters.darkModel
-            }
-            localStorage.setItem('userProfile', JSON.stringify(json))
-        })
+        window.addEventListener('beforeunload', this.saveUserProfile)
     },
     mounted(){
         close()
@@ -105,7 +99,7 @@ export default {
         menuListFunc(id){
             this.menuListIndex = id
         },
-        setMenuStyle(path){
+        async setMenuStyle(path){
             this.menuListIndex = this.menuList.findIndex(item => item.path === path)
         },
         chagenDarkModel(){
@@ -113,7 +107,14 @@ export default {
             temp =! temp
             this.$store.commit('darkModelSet', temp)
         },
-        setUserProfile(){
+        saveUserProfile(){
+            let json = {
+                uid: '',
+                darkModel: this.$store.getters.darkModel
+            }
+            localStorage.setItem('userProfile', JSON.stringify(json))
+        },
+        async setUserProfile(){
             let json = JSON.parse(localStorage.getItem('userProfile'))
             this.$store.commit('darkModelSet', json.darkModel)
         }
