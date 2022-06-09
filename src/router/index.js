@@ -6,8 +6,8 @@ const routes = [
         component: () => import('@/views/index.vue')
     },
     {
-        path: '/login',
-        component: () => import('@/views/login.vue')
+        path: '/say',
+        component: () => import('@/views/say.vue')
     }
 ]
 // const router = createRouter({history: createWebHistory(process.env.BASE_URL), routes})
