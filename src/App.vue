@@ -6,7 +6,7 @@
                 <li class="menu-list-item" v-ripple="{ duration: 500, color: this.$store.getters.darkModel ? 'invert' : ''}" v-for="item in menuList" :key="item.id" @click="menuListFunc(item.id, item.path)" :class="this.menuListIndex === item.id ? 'menu-list-item-active' : ''">{{item.title}}</li>
             </ul>
             <div class="right-button">
-                <div class="dark-button" v-ripple="{ duration: 800, color: this.$store.getters.darkModel ? 'invert' : ''}" @click="chagenDarkModel">
+                <div class="dark-button" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? '' : 'invert'}" @click="chagenDarkModel">
                     <transition name="dark-model" mode="out-in">
                         <i class="fas fa-moon" v-if="!this.$store.getters.darkModel"/>
                         <i class="fas fa-sun" v-else/>
@@ -48,13 +48,13 @@
                     <span>{{item.title}}</span>
                 </li>
             </ul>
-            <button class="drawer-login-button" v-ripple="{ duration: 800, color: 'invert'}" @click="openLoginBox">登录</button>
+            <button class="drawer-login-button" v-ripple="{ duration: 600, color: 'invert'}" @click="openLoginBox">登录</button>
         </el-drawer>
         <transition name="app-mask" mode="out-in">
             <div class="app-mask" v-show="this.isOpenLogin">
                 <div class="login-box" :style="this.$store.getters.isPhone ? 'width: 100%;height: 100%;':'width: 24rem;'">
                     <header class="top-function">
-                        <div class="left-back" v-ripple="{ duration: 800, color: this.$store.getters.darkModel ? 'invert':''}" @click="closeLoginBox">
+                        <div class="left-back" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}" @click="closeLoginBox">
                             <i class="far fa-arrow-alt-circle-left" />
                         </div>
                     </header>
@@ -63,20 +63,36 @@
                         <button class="right-register" v-ripple="{ duration: 800, color: this.$store.getters.darkModel ? 'invert':''}">注册</button>
                     </div>
                     <p class="top-tips-line">请填写以下信息进行登录</p>
-                    <label class="input-list">
-                        <div class="input-item">
+                    <div class="input-list">
+                        <label class="input-item">
                             <div class="input-top-div">
                                 <span>用户名</span>
                                 <span>*</span>
                             </div>
-                            <input type="text"/>
+                            <input type="text" @change="checkUserNameMatch"/>
                             <div class="input-tips-div">
-                                <transition>
-                                    <span class="input-tips-span">{{userNameFailMessage}}</span>
-                                </transition>
+                                <span>{{userNameFailMessage}}</span>
                             </div>
-                        </div>
-                    </label>
+                        </label>
+                        <label class="input-password">
+                            <div class="input-top-div">
+                                <span>密码</span>
+                                <span>*</span>
+                            </div>
+                            <div class="input-password-lable">
+                                <input :type="this.isShowPassword ? 'text':'password'" maxlength="16"/>
+                                <i class="far input-show-password" v-ripple="{ duration: 500, color: this.$store.getters.darkModel ? 'invert' : ''}" :class="this.isShowPassword ? 'fa-eye-slash':'fa-eye'" @click="this.isShowPassword =! this.isShowPassword"/>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="login-button" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}" :class="this.$store.getters.isPhone ? 'login-button-mobile':'login-button-pc'">登录</button>
+                    <span class="other-login-tips">其他登录方式</span>
+                    <div class="other-login-list">
+                        <i class="fab fa-qq" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
+                        <i class="fab fa-github" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
+                        <i class="fab fa-google" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
+                        <i class="fab fa-xbox" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
+                    </div>
                 </div>
             </div>
         </transition>
@@ -127,6 +143,7 @@ export default {
             ],
             isOpenDrawer: false,
             isOpenLogin: false,
+            isShowPassword: false,
             userNameFailMessage: ''
         }
     },
@@ -142,7 +159,7 @@ export default {
     },
     methods:{
         windowWidth(){
-            if(window.innerWidth <= 936){
+            if(window.innerWidth <= 767){
                 this.$store.commit('isPhoneSet', true)
             } else {
                 this.$store.commit('isPhoneSet', false)
@@ -184,16 +201,32 @@ export default {
                 this.isOpenDrawer = false
             }
             this.isOpenLogin = true
+            this.userNameFailMessage = ''
+            this.isShowPassword = false
         },
         closeLoginBox(){
             if(this.isOpenLogin){
                 setTimeout(() => {
                     this.isOpenLogin = false
-                }, 500)
+                }, 200)
             }
         },
-        checkUserNameMatch(content){
-
+        checkUserNameMatch(e){
+            let value = e.target.value
+            if(value === ''){
+                this.userNameFailMessage = '用户名不能为空'
+                return
+            }
+            //判断长度
+            const matchLineRule = /^.{4,16}$/
+            const matchZHCN = /^[\\u4E00-\\u9FA5A-Za-z0-9]+$/
+            if(matchLineRule.test(value)){
+                this.userNameFailMessage = '长度不匹配'
+            } if(!matchZHCN.test(value)) {
+                this.userNameFailMessage = '用户名不能使用中文'
+            } else {
+                this.userNameFailMessage = ''
+            }
         }
     },
     watch:{
@@ -501,7 +534,7 @@ ul , li
     }
     .dark-model-enter-active, .dark-model-leave-active
     {
-        transition: opacity 0.5s
+        transition: opacity 0.3s
     }
     .dark-model-enter-from, .dark-model-leave-to
     {
@@ -548,7 +581,7 @@ ul , li
             .top-tips
             {
                 width: 100%;
-                margin-top: 1rem;
+                margin-top: 1.5rem;
                 display: flex;
                 justify-content: space-between;
                 .left-span
@@ -573,12 +606,12 @@ ul , li
                 color: #999;
                 font-size: 0.9rem;
                 letter-spacing: 0.1rem;
-                margin-bottom: 1rem;
+                margin-bottom: 1.5rem;
             }
             .input-list
             {
                 width: 100%;
-                .input-item
+                .input-item , .input-password
                 {
                     display: flex;
                     flex-direction: column;
@@ -604,24 +637,6 @@ ul , li
                             color: red;
                         }
                     }
-                    input
-                    {
-                        width: 100%;
-                        height: 1.8rem;
-                        border-radius: 0.3rem;
-                        background-color: #f3f3f4;
-                        border: none;
-                        margin-top: 0.5rem;
-                        transition: all 0.3s;
-                        outline: none;
-                        padding: 0 0.8rem;
-                        border: solid 1px transparent;
-                    }
-                    input:hover , input:focus
-                    {
-                        box-shadow: 0 0 0.3rem rgb(147, 182, 211);
-                        border: solid 1px rgb(89, 164, 240);
-                    }
                     .input-tips-div
                     {
                         width: 100%;
@@ -632,6 +647,106 @@ ul , li
                             color: red;
                         }
                     }
+                    input , .input-password-lable input
+                    {
+                        width: 100%;
+                        height: 2rem;
+                        border-radius: 0.3rem;
+                        border: none;
+                        margin-top: 0.5rem;
+                        transition: all 0.3s;
+                        outline: none;
+                        padding: 0 0.8rem;
+                        border: solid 1px transparent;
+                    }
+                    
+                }
+                .input-item
+                {
+                    margin-bottom: 0.5rem;
+                }
+                .input-password .input-password-lable
+                {
+                    width: 100%;
+                    display: flex;
+                    .input-show-password
+                    {
+                        min-width: 2.5rem;
+                        flex: 1;
+                        margin-left: 0.5rem;
+                        margin-top: 0.5rem;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        cursor: pointer;
+                        border-radius: 0.6rem;
+                        transition: color 0.3s;
+                    }
+                    input[type="password"]::-ms-reveal
+                    {
+                        display: none;
+                    }
+                }
+            }
+            .login-button
+            {
+                width: 100%;
+                height: 2.4rem;
+                border-radius: 1.2rem;
+                font-size: 0.8rem;
+                letter-spacing: 0.1rem;
+                transition: all 0.3s;
+            }
+            .login-button-pc
+            {
+                margin: 1.5rem 0;
+            }
+            .login-button-mobile
+            {
+                margin: 4rem 0 1rem 0;
+            }
+            .other-login-tips
+            {
+                width: 100%;
+                height: 1rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 0.6rem;
+                letter-spacing: 0.08rem;
+            }
+            .other-login-tips::before , .other-login-tips::after
+            {
+                content: "";
+                display: flex;
+                flex: 1;
+                height: 0.05rem;
+            }
+            .other-login-tips::before
+            {
+                margin-right: 1rem;
+            }
+            .other-login-tips::after
+            {
+                margin-left: 1rem;
+            }
+            .other-login-list
+            {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                flex-wrap: nowrap;
+                margin-top: 1rem;
+                i
+                {
+                    width: 3rem;
+                    height: 3rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    border-radius: 50%;
+                    font-size: 1.6rem;
+                    cursor: pointer;
                 }
             }
         }
@@ -771,6 +886,55 @@ ul , li
                 color: #ffffff;
             }
         }
+        .input-list
+        {
+            .input-item , .input-password
+            {
+                .input-top-div span:nth-child(1)
+                {
+                    color: #ffffff;
+                }
+            }
+            .input-item , .input-password .input-password-lable
+            {
+                input
+                {
+                    background-color: #3f3f42;
+                    caret-color: #bd7373;
+                    color: #9c9c9c;
+                }
+                input:hover , input:focus
+                {
+                    box-shadow: 0 0 0.3rem rgba(33, 150, 243, 0.5);
+                    border: solid 1px rgba(33, 150, 243, 0.4);
+                    background-color: rgba(25, 24, 24, 0.87);
+                }
+            }
+            .input-show-password
+            {
+                color: #ffffff;
+            }
+        }
+        .login-button
+        {
+            background-color: #272727;
+        }
+        .login-button:hover
+        {
+            background-color: #535353;
+        }
+        .other-login-tips
+        {
+            color: #ffffff;   
+        }
+        .other-login-tips::before , .other-login-tips::after
+        {
+            background-color: #676363;
+        }
+        .other-login-list i
+        {
+            color: #ffffff;
+        }
     }
 }
 .light-model
@@ -837,6 +1001,48 @@ ul , li
             {
                 color: rgb(111, 111, 111);
             }
+        }
+        .input-list
+        {
+            .input-item , .input-password
+            {
+                .input-top-div span:nth-child(1)
+                {
+                    color: black;
+                }
+            }
+            .input-item , .input-password
+            {
+                input
+                {
+                    background-color: #f3f3f4;
+                }
+                input:hover , input:focus
+                {
+                    box-shadow: 0 0 0.3rem rgb(147, 182, 211);
+                    border: solid 1px rgb(89, 164, 240);
+                }
+            }
+            .input-show-password
+            {
+                color: rgb(111, 111, 111);
+            }
+        }
+        .login-button
+        {
+            background-color: #0478be;
+        }
+        .login-button:hover
+        {
+            background-color: #0688da;
+        }
+        .other-login-tips::before , .other-login-tips::after
+        {
+            background-color: #dad9d9;
+        }
+        .other-login-list i
+        {
+            color: rgb(111, 111, 111);
         }
     }
 }
