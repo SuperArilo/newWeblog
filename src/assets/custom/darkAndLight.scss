@@ -1,0 +1,312 @@
+.dark-model
+{
+    background-color: rgb(23, 29, 32);
+    .top-nav-pc , .top-nav-mobile
+    {
+        background-color: rgb(23, 29, 32);
+        .left-name , .center-name
+        {
+            color: rgb(221, 221, 221);
+        }
+    }
+    .top-nav-pc
+    {
+        .menu-list
+        {
+            .menu-list-item
+            {
+                color: lightgray;
+            }
+            .menu-list-item:hover
+            {
+                background-color: rgba(85, 85, 85, 0.2)        
+            }
+            .menu-list-item-active
+            {
+                background-color: rgb(51, 51, 51)            
+            }
+        }
+        .right-button .dark-button i
+        {
+            color: #ffffff;
+        }
+    }
+    .top-nav-mobile
+    {
+        .menu-fold i
+        {
+            color: #ffffff;
+        }
+    }
+    .app-mask
+    {
+        .login-box
+        {
+            background-color: #2f3133;
+            .top-function
+            {
+                .left-back i
+                {
+                    color: #ffffff;
+                }
+            }
+            .top-tips
+            {
+                .left-span
+                {
+                    color: #ffffff;
+                }
+            }
+            .input-list
+            {
+                .input-item , .input-password
+                {
+                    .input-top-div span:nth-child(1)
+                    {
+                        color: #ffffff;
+                    }
+                }
+                .input-item , .input-password .input-password-lable
+                {
+                    input
+                    {
+                        background-color: #3f3f42;
+                        caret-color: #bd7373;
+                        color: #9c9c9c;
+                    }
+                    input:hover , input:focus
+                    {
+                        box-shadow: 0 0 0.3rem rgba(33, 150, 243, 0.5);
+                        border: solid 1px rgba(33, 150, 243, 0.4);
+                        background-color: rgba(25, 24, 24, 0.87);
+                    }
+                }
+                .input-show-password
+                {
+                    color: #ffffff;
+                }
+            }
+            .login-button
+            {
+                background-color: #272727;
+            }
+            .login-button:hover
+            {
+                background-color: #535353;
+            }
+            .other-login-tips
+            {
+                color: #ffffff;   
+            }
+            .other-login-tips::before , .other-login-tips::after
+            {
+                background-color: #676363;
+            }
+            .other-login-list i
+            {
+                color: #ffffff;
+            }
+        }
+        .user-info-box
+        {
+            background-color: #171719;
+            .user-top-box
+            {
+                .left-dl-model i
+                {
+                    color: #ffffff;
+                }
+            }
+            .drawer-menu
+            {
+                background-color: #1b1e21;
+            }
+        }
+    }
+    .router-content
+    {
+        .index-content
+        {
+            .index-carousel-box
+            {
+                .header-tips
+                {
+                    .header-left-tips
+                    {
+                        color: #ffffff;
+                    }
+                    .header-right-switch
+                    {
+                        .switch-info
+                        {
+                            color: rgb(173, 173, 173);
+                        }
+                        .switch-box .switch-radius
+                        {
+                            background-color: rgb(177, 179, 180);
+                        }
+                        .switch-close
+                        {
+                            background-color: rgb(60, 65, 68);
+                        }
+                        .switch-open
+                        {
+                            background-color: rgb(97, 101, 103);
+                            .switch-radius
+                            {
+                                transform: translateX(1.3rem);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+.light-model
+{
+    background-color: #f4f4f4;
+    .top-nav-pc , .top-nav-mobile
+    {
+        background-color: #f4f4f4;
+        .left-name , .center-name
+        {
+            color: rgb(97, 97, 97);
+        }
+    }
+    .top-nav-pc
+    {
+        .menu-list
+        {
+            .menu-list-item
+            {
+                color: rgb(126, 126, 126);
+            }
+            .menu-list-item-active
+            {
+                background-color: rgba(80, 80, 80, 0.2)            
+            }
+            .menu-list-item:hover
+            {
+                background-color: rgb(231, 231, 231);
+            }
+        }
+        .right-button .dark-button i
+        {
+            color: rgb(111, 111, 111);
+        }
+    }
+    .top-nav-mobile
+    {
+        .menu-fold i
+        {
+            color: rgb(111, 111, 111);
+        }
+    }
+    .app-mask
+    {
+        .login-box
+        {
+            background-color: #ffffff;
+            .top-function
+            {
+                .left-back i
+                {
+                    color: rgb(111, 111, 111);
+                }
+            }
+            .input-list
+            {
+                .input-item , .input-password
+                {
+                    .input-top-div span:nth-child(1)
+                    {
+                        color: black;
+                    }
+                }
+                .input-item , .input-password
+                {
+                    input
+                    {
+                        background-color: #f3f3f4;
+                    }
+                    input:hover , input:focus
+                    {
+                        box-shadow: 0 0 0.3rem rgb(147, 182, 211);
+                        border: solid 1px rgb(89, 164, 240);
+                    }
+                }
+                .input-show-password
+                {
+                    color: rgb(111, 111, 111);
+                }
+            }
+            .login-button
+            {
+                background-color: #0478be;
+            }
+            .login-button:hover
+            {
+                background-color: #0688da;
+            }
+            .other-login-tips::before , .other-login-tips::after
+            {
+                background-color: #dad9d9;
+            }
+            .other-login-list i
+            {
+                color: rgb(111, 111, 111);
+            }
+        }
+        .user-info-box
+        {
+            background-color: #242663;
+            .user-top-box
+            {
+                .left-dl-model i
+                {
+                    color: rgb(255, 255, 255);
+                }
+            }
+            .drawer-menu
+            {
+                background-color: #1a1d53;
+            }
+        }
+    }
+    .router-content
+    {
+        .index-content
+        {
+            .index-carousel-box
+            {
+                .header-tips
+                {
+                    .header-right-switch
+                    {
+                        .switch-info
+                        {
+                            color: rgba(0, 0, 0, 0.6);
+                        }
+                        .switch-box .switch-radius
+                        {
+                            background-color: #ffffff;
+                        }
+                        .switch-close
+                        {
+                            background-color: rgb(220, 223, 230);
+                        }
+                        .switch-open
+                        {
+                            background-color: rgb(64, 158, 255);
+                            .switch-radius
+                            {
+                                transform: translateX(1.3rem);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

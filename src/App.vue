@@ -29,72 +29,74 @@
                 </transition>
             </router-view>
         </div>
-        <el-drawer v-model="this.isOpenDrawer" size="14rem" direction="ltr" :show-close="false" :with-header="false">
-            <div class="user-top-box">
-                <div class="left-dl-model" @click="chagenDarkModel" v-ripple="{ duration: 500, color: this.$store.getters.darkModel ? 'invert' : ''}">
-                    <transition name="dark-model" mode="out-in">
-                        <i class="fas fa-moon" v-if="!this.$store.getters.darkModel"/>
-                        <i class="fas fa-sun" v-else/>
-                    </transition>
-                </div>
-            </div>
-            <div class="user-head">
-                <img src=""/>
-                <span>鸽王老曹</span>
-            </div>
-            <ul class="drawer-menu">
-                <li class="drawer-menu-item" v-for="item in menuList" :key="item.id" v-ripple="{ duration: 800, color: 'invert'}" @click="menuListFunc(item.id, item.path)" :class="item.id === this.menuListIndex ? 'drawer-menu-item-active':''">
-                    <i class="fas" :class="item.iconClass"/>
-                    <span>{{item.title}}</span>
-                </li>
-            </ul>
-            <button class="drawer-login-button" v-ripple="{ duration: 600, color: 'invert'}" @click="openLoginBox">登录</button>
-        </el-drawer>
         <transition name="app-mask" mode="out-in">
-            <div class="app-mask" v-show="this.isOpenLogin">
-                <div class="login-box" :style="this.$store.getters.isPhone ? 'width: 100%;height: 100%;':'width: 24rem;'">
-                    <header class="top-function">
-                        <div class="left-back" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}" @click="closeLoginBox">
-                            <i class="far fa-arrow-alt-circle-left" />
+            <keep-alive>
+                <div class="app-mask" v-if="this.isOpenLogin || this.isOpenDrawer" :style="[this.isOpenLogin ? 'justify-content: center;':'', this.isOpenDrawer ? 'justify-content: flex-start;':'']" @click="closeUserInfoBox">
+                    <div class="login-box" :style="this.$store.getters.isPhone ? 'width: 100%;height: 100%;':'width: 24rem;'" v-if="this.isOpenLogin">
+                        <header class="top-function">
+                            <div class="left-back" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}" @click="closeLoginBox">
+                                <i class="far fa-arrow-alt-circle-left" />
+                            </div>
+                        </header>
+                        <div class="top-tips">
+                            <span class="left-span">欢迎回来,</span>
+                            <button class="right-register" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}">注册</button>
                         </div>
-                    </header>
-                    <div class="top-tips">
-                        <span class="left-span">欢迎回来,</span>
-                        <button class="right-register" v-ripple="{ duration: 800, color: this.$store.getters.darkModel ? 'invert':''}">注册</button>
+                        <p class="top-tips-line">请填写以下信息进行登录</p>
+                        <div class="input-list">
+                            <label class="input-item">
+                                <div class="input-top-div">
+                                    <span>用户名</span>
+                                    <span>*</span>
+                                </div>
+                                <input type="text" @change="checkUserNameMatch"/>
+                                <div class="input-tips-div">
+                                    <span>{{userNameFailMessage}}</span>
+                                </div>
+                            </label>
+                            <label class="input-password">
+                                <div class="input-top-div">
+                                    <span>密码</span>
+                                    <span>*</span>
+                                </div>
+                                <div class="input-password-lable">
+                                    <input :type="this.isShowPassword ? 'text':'password'" maxlength="16"/>
+                                    <i class="far input-show-password" v-ripple="{ duration: 500, color: this.$store.getters.darkModel ? 'invert' : ''}" :class="this.isShowPassword ? 'fa-eye-slash':'fa-eye'" @click="this.isShowPassword =! this.isShowPassword"/>
+                                </div>
+                            </label>
+                        </div>
+                        <button class="login-button" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}" :class="this.$store.getters.isPhone ? 'login-button-mobile':'login-button-pc'">登录</button>
+                        <span class="other-login-tips">其他登录方式</span>
+                        <div class="other-login-list">
+                            <i class="fab fa-qq" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
+                            <i class="fab fa-github" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
+                            <i class="fab fa-google" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
+                            <i class="fab fa-xbox" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
+                        </div>
                     </div>
-                    <p class="top-tips-line">请填写以下信息进行登录</p>
-                    <div class="input-list">
-                        <label class="input-item">
-                            <div class="input-top-div">
-                                <span>用户名</span>
-                                <span>*</span>
+                    <div class="user-info-box" v-if="this.isOpenDrawer">
+                        <div class="user-top-box">
+                            <div class="left-dl-model" @click="chagenDarkModel" v-ripple="{ duration: 500, color: this.$store.getters.darkModel ? 'invert' : ''}">
+                                <transition name="dark-model" mode="out-in">
+                                    <i class="fas fa-moon" v-if="!this.$store.getters.darkModel"/>
+                                    <i class="fas fa-sun" v-else/>
+                                </transition>
                             </div>
-                            <input type="text" @change="checkUserNameMatch"/>
-                            <div class="input-tips-div">
-                                <span>{{userNameFailMessage}}</span>
-                            </div>
-                        </label>
-                        <label class="input-password">
-                            <div class="input-top-div">
-                                <span>密码</span>
-                                <span>*</span>
-                            </div>
-                            <div class="input-password-lable">
-                                <input :type="this.isShowPassword ? 'text':'password'" maxlength="16"/>
-                                <i class="far input-show-password" v-ripple="{ duration: 500, color: this.$store.getters.darkModel ? 'invert' : ''}" :class="this.isShowPassword ? 'fa-eye-slash':'fa-eye'" @click="this.isShowPassword =! this.isShowPassword"/>
-                            </div>
-                        </label>
-                    </div>
-                    <button class="login-button" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}" :class="this.$store.getters.isPhone ? 'login-button-mobile':'login-button-pc'">登录</button>
-                    <span class="other-login-tips">其他登录方式</span>
-                    <div class="other-login-list">
-                        <i class="fab fa-qq" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
-                        <i class="fab fa-github" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
-                        <i class="fab fa-google" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
-                        <i class="fab fa-xbox" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
+                        </div>
+                        <div class="user-head">
+                            <img src=""/>
+                            <span>鸽王老曹</span>
+                        </div>
+                        <ul class="drawer-menu">
+                            <li class="drawer-menu-item" v-for="item in menuList" :key="item.id" v-ripple="{ duration: 800, color: 'invert'}" @click="menuListFunc(item.id, item.path)" :class="item.id === this.menuListIndex ? 'drawer-menu-item-active':''">
+                                <i class="fas" :class="item.iconClass"/>
+                                <span>{{item.title}}</span>
+                            </li>
+                        </ul>
+                        <button class="drawer-login-button" v-ripple="{ duration: 600, color: 'invert'}" @click="openLoginBox">登录</button>
                     </div>
                 </div>
-            </div>
+            </keep-alive>
         </transition>
     </div>
 </template>
@@ -102,13 +104,14 @@
 import '@/assets/fontawesome/css/all.min.css'
 import ripple from "vue-ripple-dir"
 import { start, close } from '@/util/nprogress'
+import '@/assets/custom/darkAndLight.scss'
 export default {
     directives: {
         ripple
     },
     data(){
         return{
-            menuListIndex: '',
+            menuListIndex: null,
             menuList: [
                 {
                     id: 0,
@@ -173,11 +176,8 @@ export default {
             if(!this.isOpenDrawer) return
             setTimeout(() => {
                 this.isOpenDrawer = false
-            },1000)
+            },300)
             
-        },
-        setMenuStyle(path){
-            this.menuListIndex = this.menuList.findIndex(item => item.path === path)
         },
         chagenDarkModel(){
             let temp = this.$store.getters.darkModel
@@ -200,7 +200,9 @@ export default {
             if(this.isOpenDrawer){
                 this.isOpenDrawer = false
             }
-            this.isOpenLogin = true
+            setTimeout(() => {
+                this.isOpenLogin = true
+            }, 100)
             this.userNameFailMessage = ''
             this.isShowPassword = false
         },
@@ -227,12 +229,17 @@ export default {
             } else {
                 this.userNameFailMessage = ''
             }
+        },
+        closeUserInfoBox(e){
+            if(e.target.className === 'app-mask' && this.isOpenDrawer){
+                this.isOpenDrawer = false
+            }
         }
     },
     watch:{
         $route:{
             handler(n, o){
-                this.setMenuStyle(n.path)
+                this.menuListIndex = this.menuList.findIndex(item => item.path === n.path)
             },
             deep: false
         }
@@ -300,7 +307,7 @@ ul , li
         .top-nav-pc , .top-nav-mobile
         {
             width: 100%;
-            height: 2.5rem;
+            height: 2.7rem;
             transition: background 0.3s;
             display: flex;
             align-items: center;
@@ -397,7 +404,9 @@ ul , li
         .router-content
         {
             width: 100%;
-            padding-top: 2.5rem;
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 0 2rem;
             .router-transform-enter-active, .router-transform-leave-active
             {
                 transition: opacity 0.3s
@@ -405,130 +414,6 @@ ul , li
             .router-transform-enter-from, .router-transform-leave-to
             {
                 opacity: 0;
-            }
-        }
-    }
-    .el-drawer
-    {
-        border-radius: 0.1rem;
-        .el-drawer__sr-focus
-        {
-            display: none;
-        }
-        .el-drawer__body
-        {
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: background 0.3s;
-            .user-top-box
-            {
-                width: 100%;
-                height: 3rem;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 0 1rem;
-                .left-dl-model
-                {
-                    width: 2rem;
-                    height: 2rem;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    cursor: pointer;
-                    border-radius: 50%;
-                }
-            }
-            .user-head
-            {
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                padding: 2rem 0;
-                img
-                {
-                    width: 4rem;
-                    height: 4rem;
-                    border-radius: 50%;
-                    border: solid 1px #e0e0e0;
-                    overflow: hidden;
-                }
-                span
-                {
-                    font-size: 1rem;
-                    font-weight: bold;
-                    letter-spacing: 0.08rem;
-                    color: #ffffff;
-                    margin-top: 1rem;
-                }
-            }
-            .drawer-menu
-            {
-                width: 100%;
-                display: flex;
-                flex: 1;
-                border-radius: 1.8rem 1.8rem 0.5rem 0.5rem;
-                padding: 1.8rem 1.5rem;
-                flex-direction: column;
-                transition: background 0.3s;
-                .drawer-menu-item
-                {
-                    width: 100%;
-                    height: 2rem;
-                    margin: 0.5rem 0;
-                    padding: 0 0.5rem;
-                    cursor: pointer;
-                    border-radius: 1rem;
-                    display: flex;
-                    align-items: center;
-                    i , span
-                    {
-                        transition: color 0.3s;
-                    }
-                    i
-                    {
-                        width: 2rem;
-                        height: 2rem;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        font-size: 1.1rem;
-                        color: rgb(185, 184, 204);
-                    }
-                    span
-                    {
-                        flex: 1;
-                        margin-left: 1.5rem;
-                        color: #b9b8cc;
-                        font-size: 0.88rem;
-                        letter-spacing: 0.1rem;
-                    }
-                }
-                .drawer-menu-item-active
-                {
-                    i , span
-                    {
-                        color: #ffffff;
-                    }
-                }
-            }
-            .drawer-login-button
-            {
-                width: 12rem;
-                height: 2rem;
-                border-radius: 0.3rem;
-                margin: 1rem 0;
-                background-color: #0478be;
-                cursor: pointer;
-                color: #ffffff;
-                font-size: 0.8rem;
-                letter-spacing: 0.2rem;
             }
         }
     }
@@ -550,7 +435,6 @@ ul , li
         z-index: 10;
         background-color: rgba(0, 0, 0, 0.2);
         display: flex;
-        justify-content: center;
         align-items: center;
         .login-box
         {
@@ -745,9 +629,124 @@ ul , li
                     justify-content: center;
                     align-items: center;
                     border-radius: 50%;
-                    font-size: 1.6rem;
+                    font-size: 1.5rem;
                     cursor: pointer;
                 }
+            }
+        }
+        .user-info-box
+        {
+            width: 14rem;
+            height: 100%;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .user-top-box
+            {
+                width: 100%;
+                height: 3rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0 1rem;
+                .left-dl-model
+                {
+                    width: 2rem;
+                    height: 2rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    border-radius: 50%;
+                }
+            }
+            .user-head
+            {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 2rem 0;
+                img
+                {
+                    width: 4rem;
+                    height: 4rem;
+                    border-radius: 50%;
+                    border: solid 1px #e0e0e0;
+                    overflow: hidden;
+                }
+                span
+                {
+                    font-size: 1rem;
+                    font-weight: bold;
+                    letter-spacing: 0.08rem;
+                    color: #ffffff;
+                    margin-top: 1rem;
+                }
+            }
+            .drawer-menu
+            {
+                width: 100%;
+                display: flex;
+                flex: 1;
+                border-radius: 1.8rem 1.8rem 0.5rem 0.5rem;
+                padding: 1.8rem 1.5rem;
+                flex-direction: column;
+                transition: background 0.3s;
+                .drawer-menu-item
+                {
+                    width: 100%;
+                    height: 2rem;
+                    margin: 0.5rem 0;
+                    padding: 0 0.5rem;
+                    cursor: pointer;
+                    border-radius: 1rem;
+                    display: flex;
+                    align-items: center;
+                    i , span
+                    {
+                        transition: color 0.3s;
+                    }
+                    i
+                    {
+                        width: 2rem;
+                        height: 2rem;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-size: 1.1rem;
+                        color: rgb(185, 184, 204);
+                    }
+                    span
+                    {
+                        flex: 1;
+                        margin-left: 1.5rem;
+                        color: #b9b8cc;
+                        font-size: 0.88rem;
+                        letter-spacing: 0.1rem;
+                    }
+                }
+                .drawer-menu-item-active
+                {
+                    i , span
+                    {
+                        color: #ffffff;
+                    }
+                }
+            }
+            .drawer-login-button
+            {
+                width: 12rem;
+                height: 2rem;
+                border-radius: 0.3rem;
+                margin: 1rem 0;
+                background-color: #0478be;
+                cursor: pointer;
+                color: #ffffff;
+                font-size: 0.8rem;
+                letter-spacing: 0.2rem;
             }
         }
     }
@@ -762,6 +761,10 @@ ul , li
         {
             transform: translateY(300%);
         }
+        .user-info-box
+        {
+            transform: translateX(-100%);
+        }
     }
     .app-mask-enter-to , .app-mask-leave-from
     {
@@ -769,6 +772,10 @@ ul , li
         .login-box
         {
             transform: translateY(0);
+        }
+        .user-info-box
+        {
+            transform: translateX(0);
         }
     }
 }
@@ -812,238 +819,6 @@ ul , li
     html
     {
         font-size: 16px;
-    }
-}
-.dark-model
-{
-    background-color: rgb(23, 29, 32);
-    .top-nav-pc , .top-nav-mobile
-    {
-        background-color: rgb(23, 29, 32);
-        .left-name , .center-name
-        {
-            color: rgb(221, 221, 221);
-        }
-    }
-    .top-nav-pc
-    {
-        .menu-list
-        {
-            .menu-list-item
-            {
-                color: lightgray;
-            }
-            .menu-list-item:hover
-            {
-                background-color: rgba(85, 85, 85, 0.2)        
-            }
-            .menu-list-item-active
-            {
-                background-color: rgb(51, 51, 51)            
-            }
-        }
-        .right-button .dark-button i
-        {
-            color: #ffffff;
-        }
-    }
-    .top-nav-mobile
-    {
-        .menu-fold i
-        {
-            color: #ffffff;
-        }
-    }
-    .el-drawer .el-drawer__body
-    {
-        background-color: #171719;
-        .user-top-box
-        {
-            .left-dl-model i
-            {
-                color: #ffffff;
-            }
-        }
-        .drawer-menu
-        {
-            background-color: #1b1e21;
-        }
-    }
-    .app-mask .login-box
-    {
-        background-color: #2f3133;
-        .top-function
-        {
-            .left-back i
-            {
-                color: #ffffff;
-            }
-        }
-        .top-tips
-        {
-            .left-span
-            {
-                color: #ffffff;
-            }
-        }
-        .input-list
-        {
-            .input-item , .input-password
-            {
-                .input-top-div span:nth-child(1)
-                {
-                    color: #ffffff;
-                }
-            }
-            .input-item , .input-password .input-password-lable
-            {
-                input
-                {
-                    background-color: #3f3f42;
-                    caret-color: #bd7373;
-                    color: #9c9c9c;
-                }
-                input:hover , input:focus
-                {
-                    box-shadow: 0 0 0.3rem rgba(33, 150, 243, 0.5);
-                    border: solid 1px rgba(33, 150, 243, 0.4);
-                    background-color: rgba(25, 24, 24, 0.87);
-                }
-            }
-            .input-show-password
-            {
-                color: #ffffff;
-            }
-        }
-        .login-button
-        {
-            background-color: #272727;
-        }
-        .login-button:hover
-        {
-            background-color: #535353;
-        }
-        .other-login-tips
-        {
-            color: #ffffff;   
-        }
-        .other-login-tips::before , .other-login-tips::after
-        {
-            background-color: #676363;
-        }
-        .other-login-list i
-        {
-            color: #ffffff;
-        }
-    }
-}
-.light-model
-{
-    background-color: #f4f4f4;
-    .top-nav-pc , .top-nav-mobile
-    {
-        background-color: #f4f4f4;
-        .left-name , .center-name
-        {
-            color: rgb(97, 97, 97);
-        }
-    }
-    .top-nav-pc
-    {
-        .menu-list
-        {
-            .menu-list-item
-            {
-                color: rgb(126, 126, 126);
-            }
-            .menu-list-item-active
-            {
-                background-color: rgba(80, 80, 80, 0.2)            
-            }
-            .menu-list-item:hover
-            {
-                background-color: rgb(231, 231, 231);
-            }
-        }
-        .right-button .dark-button i
-        {
-            color: rgb(111, 111, 111);
-        }
-    }
-    .top-nav-mobile
-    {
-        .menu-fold i
-        {
-            color: rgb(111, 111, 111);
-        }
-    }
-    .el-drawer .el-drawer__body
-    {
-        background-color: #242663;
-        .user-top-box
-        {
-            .left-dl-model i
-            {
-                color: rgb(255, 255, 255);
-            }
-        }
-        .drawer-menu
-        {
-            background-color: #1a1d53;
-        }
-    }
-    .app-mask .login-box
-    {
-        background-color: #ffffff;
-        .top-function
-        {
-            .left-back i
-            {
-                color: rgb(111, 111, 111);
-            }
-        }
-        .input-list
-        {
-            .input-item , .input-password
-            {
-                .input-top-div span:nth-child(1)
-                {
-                    color: black;
-                }
-            }
-            .input-item , .input-password
-            {
-                input
-                {
-                    background-color: #f3f3f4;
-                }
-                input:hover , input:focus
-                {
-                    box-shadow: 0 0 0.3rem rgb(147, 182, 211);
-                    border: solid 1px rgb(89, 164, 240);
-                }
-            }
-            .input-show-password
-            {
-                color: rgb(111, 111, 111);
-            }
-        }
-        .login-button
-        {
-            background-color: #0478be;
-        }
-        .login-button:hover
-        {
-            background-color: #0688da;
-        }
-        .other-login-tips::before , .other-login-tips::after
-        {
-            background-color: #dad9d9;
-        }
-        .other-login-list i
-        {
-            color: rgb(111, 111, 111);
-        }
     }
 }
 </style>
