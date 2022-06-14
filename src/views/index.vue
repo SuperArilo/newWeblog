@@ -13,7 +13,7 @@
             <div class="carousel-content">
                 <el-carousel ref="carouselContent" trigger="click" height="100%" indicator-position="none" arrow="never" :autoplay="this.isAutoPlay" @change="getCarouselIndex">
                     <el-carousel-item v-for="item in carouselData" :key="item.id">
-                        <img :src="item.image"/>
+                        <img :src="item.image" :title="item.title"/>
                     </el-carousel-item>
                 </el-carousel>
                 <div class="carousel-index">
@@ -23,10 +23,163 @@
                 </div>
             </div>
         </div>
+        <div class="index-container" :class="this.$store.getters.isPhone ? 'index-container-mobile':'index-container-pc'">
+            <article class="left-container-article">
+                <header class="title-function">
+                    <span class="left-title-span">全部文章</span>
+                </header>
+                <ul class="index-article-list">
+                    <li v-for="item in articleList" :key="item.id">
+                        <img :src="item.image" :title="item.title"/>
+                        <div class="article-item-content">
+                            <p>{{item.title}}</p>
+                            <span class="time-span">{{item.time}}</span>
+                            <span class="introduction-content">{{item.content}}</span>
+                        </div>
+                        <div class="bottom-function">
+                            <button type="button" v-wave="{color: 'rgb(228, 177, 177)'}">开始阅读</button>
+                            <div class="right-state">
+                                <div v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
+                                    <i class="fas fa-eye"/>
+                                    <span>908</span>
+                                </div>
+                                <div v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
+                                    <i class="fas fa-heart"/>
+                                    <span>10</span>
+                                </div>
+                                <div v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
+                                    <i class="fas fa-comment-alt"/>
+                                    <span>10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </article>
+            <aside class="right-lately-container">
+                <header class="title-function">
+                    <span class="left-title-span">最近碎语</span>
+                </header>
+                <ul class="gossip-box">
+                    <li v-for="item in gossipList" :key="item.id">
+                        <header class="gossip-title">
+                            <div class="gossip-title-left">
+                                <img :src="item.userHead" :title="item.name"/>
+                                <div class="gossip-title-left-info">
+                                    <div>
+                                        <span>{{item.name}}</span>
+                                        <span>1天前</span>
+                                    </div>
+                                    <span class="user-describe">{{item.describe}}</span>
+                                </div>
+                            </div>
+                        </header>
+                        <div class="gossip-render-content editer-render" v-html="item.content"/>
+                        <div class="gossip-state">
+                            <span>0个喜欢</span>
+                            <span>|</span>
+                            <span>1个评论</span>
+                        </div>
+                        <div class="gossip-button-box">
+                            <button type="button" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
+                                <i class="fas fa-heart"/>
+                                喜欢
+                            </button>
+                            <button @click="openGossipComment(item.id)" type="button" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
+                                <i class="fas fa-comment-dots"/>
+                                评论
+                            </button>
+                            <button type="button" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
+                                <i class="fas fa-share-alt"/>
+                                分享
+                            </button>
+                        </div>
+                        <el-collapse-transition>
+                            <div class="gossip-comment-box" v-if="isOpenGossipCommentBox && item.id === this.gossipTempId">
+                                <Toolbar :editor="editorRef" :defaultConfig="toolbarConfig" :mode="mode" />
+                                <Editor style="height: 300px;" v-model="valueHtml" :defaultConfig="editorConfig" :mode="mode" @onCreated="handleCreated" @onFocus="handleFocus" />
+                            </div>
+                        </el-collapse-transition>
+                    </li>
+                </ul>
+                <header class="title-function">
+                    <span class="left-title-span">最近来访</span>
+                </header>
+                <div class="visitor-box">
+                    <div class="visitor-item" v-for="item in visitorList" :key="item.id">
+                        <img :src="item.userHead" :title="item.name"/>
+                        <span class="visitor-name">{{item.name}}</span>
+                        <span class="visitor-time">{{item.time}}</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
     </div>
 </template>
 <script>
+import '@wangeditor/editor/dist/css/style.css'
+import { onBeforeUnmount, ref, shallowRef, onMounted } from 'vue'
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+import { DomEditor } from '@wangeditor/editor'
 export default {
+    components: { 
+        Editor, Toolbar 
+    },
+    setup() {
+        const editorRef = shallowRef()
+        const valueHtml = ''
+        onMounted(() => {
+        })
+        const toolbarConfig = {
+            excludeKeys: [
+                'blockquote',
+                'header1',
+                'header2',
+                'header3',
+                'bulletedList',
+                'codeBlock',
+                'insertImage',
+                'insertLink',
+                'insertTable',
+                'insertVideo',
+                'justifyCenter',
+                'justifyLeft',
+                'justifyRight',
+                'numberedList',
+                'redo',
+                'todo',
+                'undo',
+                'uploadImage',
+                'group-image',
+                'fullScreen',
+                '|',
+                'clearStyle'
+            ]
+        }
+        const editorConfig = { placeholder: '', autoFocus: false }
+        onBeforeUnmount(() => {
+            const editor = editorRef.value
+            if (editor == null) return
+            editor.destroy()
+        })
+
+        const handleCreated = (editor) => {
+            editorRef.value = editor
+        }
+
+        const handleFocus = (editor) => {
+            // console.log(DomEditor.getToolbar(editor).getConfig().toolbarKeys)
+        }
+        return {
+            editorRef,
+            valueHtml,
+            mode: 'simple', // 或 'simple'
+            toolbarConfig,
+            editorConfig,
+            handleCreated,
+            handleFocus
+        }
+    },
     data(){
         return{
             isAutoPlay: true,
@@ -48,7 +201,112 @@ export default {
                 }
             ],
             carouselIndex: 0,
-            carouselActiveData: '',
+            articleList:[
+                {
+                    id: 0,
+                    image: require('@/assets/image/test.png'),
+                    title: '2021年6月24日，数据分析当前是否还适合投资FIL云算力',
+                    time: '六月 24, 2021',
+                    content: '随着币价的下跌，最近不少人蠢蠢欲动，开始考虑是否要布局一下FIL云算力。为了让一部分不明所以、跑步入场的小白，对自己投资的项目有个较为客观的认知，接下来我会在数据面上分析下这项投资的实际可'
+                },
+                {
+                    id: 0,
+                    image: require('@/assets/image/test.png'),
+                    title: '2021年6月24日，数据分析当前是否还适合投资FIL云算力',
+                    time: '六月 24, 2021',
+                    content: '随着币价的下跌，最近不少人蠢蠢欲动，开始考虑是否要布局一下FIL云算力。为了让一部分不明所以、跑步入场的小白，对自己投资的项目有个较为客观的认知，接下来我会在数据面上分析下这项投资的实际可'
+                },
+                {
+                    id: 0,
+                    image: require('@/assets/image/test.png'),
+                    title: '2021年6月24日，数据分析当前是否还适合投资FIL云算力',
+                    time: '六月 24, 2021',
+                    content: '随着币价的下跌，最近不少人蠢蠢欲动，开始考虑是否要布局一下FIL云算力。为了让一部分不明所以、跑步入场的小白，对自己投资的项目有个较为客观的认知，接下来我会在数据面上分析下这项投资的实际可'
+                },
+                {
+                    id: 0,
+                    image: require('@/assets/image/test.png'),
+                    title: '2021年6月24日，数据分析当前是否还适合投资FIL云算力',
+                    time: '六月 24, 2021',
+                    content: '随着币价的下跌，最近不少人蠢蠢欲动，开始考虑是否要布局一下FIL云算力。为了让一部分不明所以、跑步入场的小白，对自己投资的项目有个较为客观的认知，接下来我会在数据面上分析下这项投资的实际可'
+                }
+            ],
+            gossipList:[
+                {
+                    id: 0,
+                    userHead: require('@/assets/image/userHead.jpg'),
+                    name: '老王',
+                    time: '1天前',
+                    describe: '博主，前端牛逼工程师',
+                    content: '<p>嗯哼哼，啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</P>'
+                },
+                {
+                    id: 1,
+                    userHead: require('@/assets/image/userHead.jpg'),
+                    name: '老王',
+                    time: '1天前',
+                    describe: '博主，前端牛逼工程师',
+                    content: '<p>嗯哼哼，啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</P>'
+                }
+            ],
+            gossipTempId: '',
+            isOpenGossipCommentBox: false,
+            visitorList:[
+                {
+                    id: 0,
+                    name: '大帅逼',
+                    userHead: require('@/assets/image/userHead.jpg'),
+                    time: '4个月前'
+                },
+                {
+                    id: 0,
+                    name: '111',
+                    userHead: require('@/assets/image/userHead.jpg'),
+                    time: '4个月前'
+                },
+                {
+                    id: 0,
+                    name: '111',
+                    userHead: require('@/assets/image/userHead.jpg'),
+                    time: '4个月前'
+                },
+                {
+                    id: 0,
+                    name: '111',
+                    userHead: require('@/assets/image/userHead.jpg'),
+                    time: '4个月前'
+                },
+                {
+                    id: 0,
+                    name: '111',
+                    userHead: require('@/assets/image/userHead.jpg'),
+                    time: '4个月前'
+                },
+                {
+                    id: 0,
+                    name: '111',
+                    userHead: require('@/assets/image/userHead.jpg'),
+                    time: '4个月前'
+                },
+                {
+                    id: 0,
+                    name: '111',
+                    userHead: require('@/assets/image/userHead.jpg'),
+                    time: '4个月前'
+                },
+                {
+                    id: 0,
+                    name: '111',
+                    userHead: require('@/assets/image/userHead.jpg'),
+                    time: '4个月前'
+                },
+                {
+                    id: 0,
+                    name: '111',
+                    userHead: require('@/assets/image/userHead.jpg'),
+                    time: '4个月前'
+                }
+            ]
         }
     },
     mounted(){
@@ -59,9 +317,22 @@ export default {
         },
         choiceCarouseIndex(index){
             this.$refs.carouselContent.setActiveItem(index)
+        },
+        openGossipComment(id){
+            if(this.gossipTempId === '') {
+                this.gossipTempId = id
+                this.isOpenGossipCommentBox = true
+            } else if(this.gossipTempId === id){
+                this.gossipTempId = ''
+                if(this.isOpenGossipCommentBox){
+                    this.isOpenGossipCommentBox = false
+                }
+            } else if(this.gossipTempId !== id){
+                this.gossipTempId = id
+            }
+            
         }
     }
-
 }
 </script>
 <style scoped lang='scss'>
@@ -134,6 +405,11 @@ export default {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
+                    transition: transform 0.5s;
+                }
+                img:hover
+                {
+                    transform: scale(1.02);
                 }
             }
             .carousel-index
@@ -174,6 +450,330 @@ export default {
                 }
                 
             }
+        }
+    }
+    .index-container
+    {
+        width: 100%;
+        display: flex;
+        .left-container-article , .right-lately-container
+        {
+            .title-function
+            {
+                width: 100%;
+                height: 2.5rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                .left-title-span
+                {
+                    font-size: 0.85rem;
+                    transition: color 0.3s;
+                    letter-spacing: 0.08rem;
+                }
+            }
+        }
+        .left-container-article
+        {
+            display: flex;
+            align-content: flex-start;
+            flex-wrap: wrap;
+            .index-article-list
+            {
+                width: 100%;
+                display: flex;
+                align-content: flex-start;
+                flex-wrap: wrap;
+                li
+                {
+                    width: 100%;
+                    margin: 0.8rem 0;
+                    border-radius: 0.5rem;
+                    overflow: hidden;
+                    transition: background-color 0.3s;
+                    display: flex;
+                    flex-direction: column;
+                    img
+                    {
+                        width: 100%;
+                        height: 18rem;
+                        object-fit: cover;
+                        transition: transform 0.5s;
+                    }
+                    img:hover
+                    {
+                        transform: scale(1.01);
+                    }
+                    .article-item-content
+                    {
+                        width: 100%;
+                        padding: 0 0.8rem;
+                        margin-top: 1rem;
+                        display: flex;
+                        flex-direction: column;
+                        justify-items: flex-start;
+                        p , .time-span , .introduction-content
+                        {
+                            width: 100%;
+                            word-break: break-all;
+                            transition: color 0.3s;
+                        }
+                        p
+                        {
+                            text-align: left;
+                            
+                            font-weight: 500;
+                            font-size: 1.1rem;
+                        }
+                        .time-span
+                        {
+                            font-size: 0.75rem;
+                            margin-top: 0.5rem;
+                        }
+                        .introduction-content
+                        {
+                            text-align: left;
+                            margin-top: 1rem;
+                            font-size: 0.72rem;
+                            display: -webkit-box;
+                            -webkit-line-clamp: 2;
+                            -webkit-box-orient: vertical;
+                            text-overflow: ellipsis;
+                            overflow: hidden;
+                        }
+                    }
+                    .bottom-function
+                    {
+                        width: 100%;
+                        height: 1.8rem;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin: 0.5rem 0;
+                        padding: 0 0.8rem;
+                        button
+                        {
+                            width: 4rem;
+                            height: 1.8rem;
+                            transition: all 0.3s;
+                            border-radius: 0.3rem;
+                            cursor: pointer;
+                            color: #ec558c;
+                        }
+                        .right-state
+                        {
+                            height: inherit;
+                            display: flex;
+                            div
+                            {
+                                display: flex;
+                                align-items: center;
+                                border-radius: 0.3rem;
+                                padding: 0 0.3rem;
+                                cursor: pointer;
+                                span
+                                {
+                                    font-size: 0.7rem;
+                                    margin-left: 0.5rem;
+                                    transition: color 0.3s;
+                                }
+                                i
+                                {
+                                    font-size: 0.8rem;
+                                    transition: transform 0.3s, color 0.3s;
+                                }
+                            }
+                            div:hover
+                            {
+                                i
+                                {
+                                    transform: scale(1.2);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .right-lately-container
+        {
+            .gossip-box
+            {
+                width: 100%;
+                display: flex;
+                align-content: flex-start;
+                flex-wrap: wrap;
+                li
+                {
+                    width: 100%;
+                    margin: 0.8rem 0;
+                    padding: 0.5rem;
+                    background-color: #ffffff;
+                    border-radius: 0.3rem;
+                    display: flex;
+                    align-content: flex-start;
+                    flex-wrap: wrap;
+                    .gossip-title
+                    {
+                        width: 100%;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-start;
+                        .gossip-title-left
+                        {
+                            height: 2.5rem;
+                            display: flex;
+                            align-items: center;
+                            img
+                            {
+                                width: 2.2rem;
+                                height: 2.2rem;
+                                overflow: hidden;
+                                border-radius: 50%;
+                            }
+                            .gossip-title-left-info
+                            {
+                                height: inherit;
+                                display: flex;
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: space-around;
+                                margin-left: 0.5rem;
+                                div
+                                {
+                                    span:nth-child(1)
+                                    {
+                                        font-size: 0.75rem;
+                                        font-weight: bold;
+                                    }
+                                    span:nth-child(2)
+                                    {
+                                        margin-left: 0.5rem;
+                                    }
+                                }
+                                .user-describe , div span:nth-child(2)
+                                {
+                                    font-size: 0.6rem;
+                                    color: #777777;
+                                }
+                            }
+                        }
+                    }
+                    .gossip-render-content , .editer-render
+                    {
+                        width: 100%;
+                        flex: 1;
+                        min-height: 3rem;
+                    }
+                    .gossip-state
+                    {
+                        width: 100%;
+                        height: 1.5rem;
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
+                        span
+                        {
+                            color: #777777;
+                            font-size: 0.62rem;
+                        }
+                        span:nth-child(2)
+                        {
+                            margin: 0 0.5rem;
+                        }
+                    }
+                    .gossip-button-box
+                    {
+                        width: 100%;
+                        display: flex;
+                        margin-top: 0.3rem;
+                        button
+                        {
+                            flex: 1;
+                            height: 1.8rem;
+                            background-color: rgb(245, 245, 245);
+                            border-radius: 0.25rem;
+                            cursor: pointer;
+                            font-size: 0.7rem;
+                            color: #777777;
+                        }
+                        button:nth-child(2)
+                        {
+                            margin: 0 0.3rem;
+                        }
+                    }
+                    .gossip-comment-box
+                    {
+                        width: 100%;
+                        padding-top: 0.5rem;
+                    }
+                    ::v-deep(.w-e-full-screen-container)
+                    {
+                        z-index: 10;
+                    }
+                }
+            }
+            .visitor-box
+            {
+                width: 100%;
+                border-radius: 0.25rem;
+                background-color: #ffffff;
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                padding: 1rem 0.5rem;
+                grid-row-gap: 0.5rem;
+                grid-column-gap: 0.5rem;
+                .visitor-item
+                {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    img
+                    {
+                        width: 2rem;
+                        height: 2rem;
+                        border-radius: 50%;
+                        overflow: hidden;
+                    }
+                    .visitor-name
+                    {
+                        font-size: 0.7rem;
+                        margin: 0.3rem 0;
+                    }
+                    .visitor-time
+                    {
+                        font-size: 0.6rem;
+                        color: #777777;
+                    }
+                }
+            }
+        }
+    }
+    .index-container-pc
+    {
+        justify-content: space-between;
+        .left-container-article
+        {
+            flex: 1;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            margin-right: 2rem;
+        }
+        .right-lately-container
+        {
+            width: 16rem;
+        }
+    }
+    .index-container-mobile
+    {
+        flex-direction: column;
+        .left-container-article
+        {
+            width: 100%;
+        }
+        .right-lately-container
+        {
+            width: 100%;
         }
     }
 }

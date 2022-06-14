@@ -3,22 +3,22 @@
         <nav class="top-nav-pc" v-if="!this.$store.getters.isPhone">
             <span class="left-name">鸽王BLOG</span>
             <ul class="menu-list">
-                <li class="menu-list-item" v-ripple="{ duration: 500, color: this.$store.getters.darkModel ? 'invert' : ''}" v-for="item in menuList" :key="item.id" @click="menuListFunc(item.id, item.path)" :class="this.menuListIndex === item.id ? 'menu-list-item-active' : ''">{{item.title}}</li>
+                <li class="menu-list-item" v-for="item in menuList" :key="item.id" @click="menuListFunc(item.id, item.path)" :class="this.menuListIndex === item.id ? 'menu-list-item-active' : ''" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">{{item.title}}</li>
             </ul>
             <div class="right-button">
-                <div class="dark-button" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? '' : 'invert'}" @click="chagenDarkModel">
+                <div class="dark-button" @click="chagenDarkModel" v-wave="{color: this.$store.getters.darkModel ? 'rgba(0, 0, 0, 0.7)':'rgba(255, 255, 255, 0.7)'}">
                     <transition name="dark-model" mode="out-in">
                         <i class="fas fa-moon" v-if="!this.$store.getters.darkModel"/>
                         <i class="fas fa-sun" v-else/>
                     </transition>
                 </div>
-                <button class="login-button" v-ripple="{ duration: 800, color: 'invert'}" @click="openLoginBox">登录</button>
+                <button type="button" class="login-button" @click="openLoginBox" v-wave="{color: 'rgba(255, 255, 255, 0.7)'}">登录</button>
             </div>
         </nav>
         <nav class="top-nav-mobile" v-else>
             <span class="left-placeholder"></span>
             <span class="center-name">鸽王BLOG</span>
-            <div v-ripple="{ duration: 500, color: this.$store.getters.darkModel ? 'invert' : ''}" class="menu-fold" @click="this.isOpenDrawer = true">
+            <div class="menu-fold" @click="this.isOpenDrawer = true" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
                 <i class="fas fa-bars"/>
             </div>
         </nav>
@@ -34,13 +34,13 @@
                 <div class="app-mask" v-if="this.isOpenLogin || this.isOpenDrawer" :style="[this.isOpenLogin ? 'justify-content: center;':'', this.isOpenDrawer ? 'justify-content: flex-start;':'']" @click="closeUserInfoBox">
                     <div class="login-box" :style="this.$store.getters.isPhone ? 'width: 100%;height: 100%;':'width: 24rem;'" v-if="this.isOpenLogin">
                         <header class="top-function">
-                            <div class="left-back" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}" @click="closeLoginBox">
-                                <i class="far fa-arrow-alt-circle-left" />
+                            <div class="left-back" @click="closeLoginBox" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
+                                <i class="far fa-arrow-alt-circle-left"/>
                             </div>
                         </header>
                         <div class="top-tips">
                             <span class="left-span">欢迎回来,</span>
-                            <button class="right-register" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}">注册</button>
+                            <button type="button" class="right-register" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">注册</button>
                         </div>
                         <p class="top-tips-line">请填写以下信息进行登录</p>
                         <div class="input-list">
@@ -61,22 +61,22 @@
                                 </div>
                                 <div class="input-password-lable">
                                     <input :type="this.isShowPassword ? 'text':'password'" maxlength="16"/>
-                                    <i class="far input-show-password" v-ripple="{ duration: 500, color: this.$store.getters.darkModel ? 'invert' : ''}" :class="this.isShowPassword ? 'fa-eye-slash':'fa-eye'" @click="this.isShowPassword =! this.isShowPassword"/>
+                                    <i class="far input-show-password" :class="this.isShowPassword ? 'fa-eye-slash':'fa-eye'" @click="this.isShowPassword =! this.isShowPassword" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
                                 </div>
                             </label>
                         </div>
-                        <button class="login-button" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}" :class="this.$store.getters.isPhone ? 'login-button-mobile':'login-button-pc'">登录</button>
+                        <button type="button" class="login-button" :class="this.$store.getters.isPhone ? 'login-button-mobile':'login-button-pc'" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">登录</button>
                         <span class="other-login-tips">其他登录方式</span>
                         <div class="other-login-list">
-                            <i class="fab fa-qq" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
-                            <i class="fab fa-github" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
-                            <i class="fab fa-google" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
-                            <i class="fab fa-xbox" v-ripple="{ duration: 600, color: this.$store.getters.darkModel ? 'invert':''}"/>
+                            <i class="fab fa-qq" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
+                            <i class="fab fa-github" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
+                            <i class="fab fa-google" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
+                            <i class="fab fa-xbox" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
                         </div>
                     </div>
                     <div class="user-info-box" v-if="this.isOpenDrawer">
                         <div class="user-top-box">
-                            <div class="left-dl-model" @click="chagenDarkModel" v-ripple="{ duration: 500, color: this.$store.getters.darkModel ? 'invert' : ''}">
+                            <div class="left-dl-model" @click="chagenDarkModel" v-wave="{color: 'rgba(255, 255, 255, 0.7)'}">
                                 <transition name="dark-model" mode="out-in">
                                     <i class="fas fa-moon" v-if="!this.$store.getters.darkModel"/>
                                     <i class="fas fa-sun" v-else/>
@@ -88,27 +88,30 @@
                             <span>鸽王老曹</span>
                         </div>
                         <ul class="drawer-menu">
-                            <li class="drawer-menu-item" v-for="item in menuList" :key="item.id" v-ripple="{ duration: 800, color: 'invert'}" @click="menuListFunc(item.id, item.path)" :class="item.id === this.menuListIndex ? 'drawer-menu-item-active':''">
+                            <li class="drawer-menu-item" v-for="item in menuList" :key="item.id" @click="menuListFunc(item.id, item.path)" :class="item.id === this.menuListIndex ? 'drawer-menu-item-active':''"  v-wave="{color: 'rgba(255, 255, 255, 0.7)'}">
                                 <i class="fas" :class="item.iconClass"/>
                                 <span>{{item.title}}</span>
                             </li>
                         </ul>
-                        <button class="drawer-login-button" v-ripple="{ duration: 600, color: 'invert'}" @click="openLoginBox">登录</button>
+                        <button class="drawer-login-button" @click="openLoginBox"  v-wave="{color: 'rgba(0, 0, 0, 0.7)'}">登录</button>
                     </div>
                 </div>
             </keep-alive>
+        </transition>
+        <transition name="scroll-up" mode="out-in">
+            <div v-show="this.$store.getters.windowScrollValue >= 400" class="scroll-up" @click="scrollToTop">
+                <i class="far fa-arrow-alt-circle-up"/>
+                <span>UP</span>
+            </div>
         </transition>
     </div>
 </template>
 <script>
 import '@/assets/fontawesome/css/all.min.css'
-import ripple from "vue-ripple-dir"
 import { start, close } from '@/util/nprogress'
 import '@/assets/custom/darkAndLight.scss'
+import $ from 'jquery'
 export default {
-    directives: {
-        ripple
-    },
     data(){
         return{
             menuListIndex: null,
@@ -155,6 +158,7 @@ export default {
         this.setUserProfile()
         this.windowWidth()
         window.addEventListener('resize', this.windowWidth)
+        window.addEventListener('scroll', this.scrollValue, true)
         window.addEventListener('beforeunload', this.saveUserProfile)
     },
     mounted(){
@@ -210,7 +214,7 @@ export default {
             if(this.isOpenLogin){
                 setTimeout(() => {
                     this.isOpenLogin = false
-                }, 200)
+                }, 400)
             }
         },
         checkUserNameMatch(e){
@@ -234,7 +238,13 @@ export default {
             if(e.target.className === 'app-mask' && this.isOpenDrawer){
                 this.isOpenDrawer = false
             }
-        }
+        },
+        scrollToTop(){
+            $('html,body').stop().animate({'scrollTop': 0})
+        },
+        scrollValue(e){
+            this.$store.commit('windowScrollValueSet', $(e.target).scrollTop())
+        },
     },
     watch:{
         $route:{
@@ -255,9 +265,9 @@ img
 body, html
 {
     width: 100%;
-    height: 100%;
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
     overflow-x: hidden;
+    overflow-y: overlay;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
     .img-viewr__body-lock
     {
@@ -271,6 +281,7 @@ button
     cursor: pointer;
     color: #ffffff;
     letter-spacing: 0.08rem;
+    background-color: transparent;
 }
 *
 {
@@ -323,6 +334,7 @@ ul , li
                 font-size: 1rem;
                 letter-spacing: 0.1rem;
                 transition: color 0.3s;
+                cursor: pointer;
             }
         }
         .top-nav-pc
@@ -479,7 +491,6 @@ ul , li
                     width: 3.5rem;
                     height: 1.8rem;
                     color: #ec558c;
-                    background-color: transparent;
                     font-size: 0.82rem;
                     border-radius: 0.2rem;
                 }
@@ -778,6 +789,48 @@ ul , li
             transform: translateX(0);
         }
     }
+    .scroll-up
+    {
+        display: flex;
+        justify-content: center;
+        align-content: flex-start;
+        flex-wrap: wrap;
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        margin: 2rem 1rem;
+        z-index: 600;
+        color: #3773f3;
+        background-color: #ffffff;
+        padding: 0.4rem 0;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 0.15rem rgba(0, 0, 0, 0.521);
+        cursor: pointer;
+        i , span
+        {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        i
+        {
+            font-size: 2rem;
+        }
+        span
+        {
+            margin-top: 0.2rem;
+            font-size: 0.8rem;
+        }
+    }
+    .scroll-up-enter-active , .scroll-up-leave-active
+    {
+        transition: all 0.3s;
+    }
+    .scroll-up-enter-from , .scroll-up-leave-to
+    {
+        opacity: 0;
+        transform: translateY(1rem);
+    }
 }
 @media screen and (min-width:1400px)
 {
@@ -819,6 +872,58 @@ ul , li
     html
     {
         font-size: 16px;
+    }
+}
+.editer-render
+{
+    font-size: 0.6rem !important;
+    blockquote
+    {
+        display: block;
+        border-left: 0.3rem solid #d0e5f2;
+        padding: 0.15rem 1rem;
+        margin: 0.3rem 0;
+        line-height: 2;
+        font-size: 100%;
+        background-color: #f1f1f1;
+    }
+    hr
+    {
+        cursor: pointer;
+        display: block;
+        height: 0;
+        border: 0;
+        border-top: 0.1rem solid #ccc;
+        margin: 0.6rem 0;
+    }
+    img
+    {
+        height: auto !important;
+        cursor: pointer;
+    }
+    h1 , h2 , h3 , h4 , h5 , p , table , pre
+    {
+        margin: 0.5rem 0;
+        line-height: 1.5;
+    }
+    table
+    {
+        border-top: 0.08rem solid #ccc;
+        border-left: 0.08rem solid #ccc;
+        th , td
+        {
+            border-bottom: 0.08rem solid #ccc;
+            border-right: 0.08rem solid #ccc;
+            padding: 0.1rem 0.3rem;
+            min-height: 1.2rem;
+            height: 1.2rem;
+        }
+        th
+        {
+            border-bottom: 0.1rem solid #ccc;
+            text-align: center;
+            background-color: #f1f1f1;
+        }
     }
 }
 </style>

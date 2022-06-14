@@ -160,6 +160,44 @@
                     }
                 }
             }
+            .index-container
+            {
+                .left-container-article , .right-lately-container
+                {
+                    .title-function .left-title-span
+                    {
+                        color: #ffffff;
+                    }
+                }
+                .left-container-article
+                {
+                    .index-article-list li
+                    {
+                        background-color: rgb(47, 49, 51);
+                        .article-item-content
+                        {
+                            p , .time-span , .introduction-content
+                            {
+                                color: #ffffff;
+                            }
+                        }
+                        .bottom-function
+                        {
+                            button:hover
+                            {
+                                background-color: rgba(253, 218, 218, 0.1);
+                            }
+                            .right-state div
+                            {
+                                span , i
+                                {
+                                    color: rgb(201, 201, 201);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -302,6 +340,38 @@
                             .switch-radius
                             {
                                 transform: translateX(1.3rem);
+                            }
+                        }
+                    }
+                }
+            }
+            .index-container
+            {
+                .left-container-article .index-article-list li
+                {
+                    background-color: #ffffff;
+                    .article-item-content
+                    {
+                        .time-span
+                        {
+                            color: rgba(0, 0, 0, 0.6);
+                        }
+                        .introduction-content
+                        {
+                            color: rgba(0, 0, 0, 0.87);
+                        }
+                    }
+                    .bottom-function
+                    {
+                        button:hover
+                        {
+                            background-color: rgb(255, 247, 247);
+                        }
+                        .right-state div
+                        {
+                            span , i
+                            {
+                                color: rgb(115, 115, 115);
                             }
                         }
                     }
