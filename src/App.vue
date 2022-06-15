@@ -49,21 +49,21 @@
                                     <span>用户名</span>
                                     <span>*</span>
                                 </div>
-                                <input type="text" @change="checkUserNameMatch"/>
+                                <input type="text" @change="checkUserNameMatch" placeholder="请输入用户名"/>
                                 <div class="input-tips-div">
                                     <span>{{userNameFailMessage}}</span>
                                 </div>
                             </label>
-                            <label class="input-password">
+                            <form class="input-password">
                                 <div class="input-top-div">
                                     <span>密码</span>
                                     <span>*</span>
                                 </div>
                                 <div class="input-password-lable">
-                                    <input :type="this.isShowPassword ? 'text':'password'" maxlength="16"/>
+                                    <input :type="this.isShowPassword ? 'text':'password'" maxlength="16" placeholder="请输入密码" autocomplete="off"/>
                                     <i class="far input-show-password" :class="this.isShowPassword ? 'fa-eye-slash':'fa-eye'" @click="this.isShowPassword =! this.isShowPassword" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
                                 </div>
-                            </label>
+                            </form>
                         </div>
                         <button type="button" class="login-button" :class="this.$store.getters.isPhone ? 'login-button-mobile':'login-button-pc'" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">登录</button>
                         <span class="other-login-tips">其他登录方式</span>
