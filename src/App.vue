@@ -831,6 +831,50 @@ ul , li
         opacity: 0;
         transform: translateY(1rem);
     }
+    .editer-render
+    {
+        font-size: 0.6rem !important;
+        blockquote
+        {
+            display: block;
+            padding: 0.15rem 1rem;
+            margin: 0.3rem 0;
+            line-height: 2;
+            font-size: 100%;
+        }
+        hr
+        {
+            cursor: pointer;
+            display: block;
+            height: 0;
+            border: 0;
+            margin: 0.6rem 0;
+        }
+        img
+        {
+            height: auto !important;
+            cursor: pointer;
+        }
+        h1 , h2 , h3 , h4 , h5 , p , table , pre
+        {
+            margin: 0.5rem 0;
+            line-height: 1.5;
+        }
+        table
+        {
+            th , td
+            {
+
+                padding: 0.1rem 0.3rem;
+                min-height: 1.2rem;
+                height: 1.2rem;
+            }
+            th
+            {
+                text-align: center;
+            }
+        }
+    }
 }
 @media screen and (min-width:1400px)
 {
@@ -872,58 +916,6 @@ ul , li
     html
     {
         font-size: 16px;
-    }
-}
-.editer-render
-{
-    font-size: 0.6rem !important;
-    blockquote
-    {
-        display: block;
-        border-left: 0.3rem solid #d0e5f2;
-        padding: 0.15rem 1rem;
-        margin: 0.3rem 0;
-        line-height: 2;
-        font-size: 100%;
-        background-color: #f1f1f1;
-    }
-    hr
-    {
-        cursor: pointer;
-        display: block;
-        height: 0;
-        border: 0;
-        border-top: 0.1rem solid #ccc;
-        margin: 0.6rem 0;
-    }
-    img
-    {
-        height: auto !important;
-        cursor: pointer;
-    }
-    h1 , h2 , h3 , h4 , h5 , p , table , pre
-    {
-        margin: 0.5rem 0;
-        line-height: 1.5;
-    }
-    table
-    {
-        border-top: 0.08rem solid #ccc;
-        border-left: 0.08rem solid #ccc;
-        th , td
-        {
-            border-bottom: 0.08rem solid #ccc;
-            border-right: 0.08rem solid #ccc;
-            padding: 0.1rem 0.3rem;
-            min-height: 1.2rem;
-            height: 1.2rem;
-        }
-        th
-        {
-            border-bottom: 0.1rem solid #ccc;
-            text-align: center;
-            background-color: #f1f1f1;
-        }
     }
 }
 </style>

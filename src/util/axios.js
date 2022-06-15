@@ -1,7 +1,7 @@
 import axios from 'axios'
 axios.defaults.withCredentials = false
 const service = axios.create({
-    baseURL: 'http://121.41.98.209:18989/',
+    baseURL: '',
     timeout: 15000
 })
 service.interceptors.request.use(config => {

@@ -197,7 +197,65 @@
                         }
                     }
                 }
+                .right-lately-container
+                {
+                    .gossip-box li
+                    {
+                        background-color: rgb(47, 49, 51);
+                        .gossip-title .gossip-title-left .gossip-title-left-info
+                        {
+                            div span:nth-child(1)
+                            {
+                                color: #ffffff;
+                            }
+                        }
+                        .gossip-button-box button
+                        {
+                            background-color: rgb(43, 43, 43);
+                            color: #ffffff;
+                        }
+                    }
+                    .visitor-box
+                    {
+                        background-color: rgb(47, 49, 51);
+                        .visitor-name
+                        {
+                            color: #ffffff;
+                        }
+                    }
+                }
             }
+        }
+    }
+    .editer-render
+    {
+        blockquote
+        {
+            border-left: 0.3rem solid #d0e5f2;
+            background-color: #f1f1f1;
+        }
+        hr
+        {
+            border-top: 0.1rem solid #ccc;
+        }
+        table
+        {
+            border-top: 0.08rem solid #ccc;
+            border-left: 0.08rem solid #ccc;
+            th, tr
+            {
+                border-bottom: 0.08rem solid #ccc;
+                border-right: 0.08rem solid #ccc;
+            }
+            th
+            {
+                border-bottom: 0.1rem solid #ccc;
+                background-color: #f1f1f1;
+            }
+        }
+        h1 , h2 , h3 , h4 , h5 , p , table , pre
+        {
+            color: #ffffff;
         }
     }
 }
@@ -376,6 +434,49 @@
                         }
                     }
                 }
+                .right-lately-container
+                {
+                    .gossip-box li
+                    {
+                        background-color: #ffffff;
+                        .gossip-button-box button
+                        {
+                            background-color: rgb(245, 245, 245);
+                            color: #777777;
+                        }
+                    }
+                    .visitor-box
+                    {
+                        background-color: #ffffff;
+                    }
+                }
+            }
+        }
+    }
+    .editer-render
+    {
+        blockquote
+        {
+            border-left: 0.3rem solid #d0e5f2;
+            background-color: #f1f1f1;
+        }
+        hr
+        {
+            border-top: 0.1rem solid #ccc;
+        }
+        table
+        {
+            border-top: 0.08rem solid #ccc;
+            border-left: 0.08rem solid #ccc;
+            th, tr
+            {
+                border-bottom: 0.08rem solid #ccc;
+                border-right: 0.08rem solid #ccc;
+            }
+            th
+            {
+                border-bottom: 0.1rem solid #ccc;
+                background-color: #f1f1f1;
             }
         }
     }

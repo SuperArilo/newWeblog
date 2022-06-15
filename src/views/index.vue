@@ -14,6 +14,10 @@
                 <el-carousel ref="carouselContent" trigger="click" height="100%" indicator-position="none" arrow="never" :autoplay="this.isAutoPlay" @change="getCarouselIndex">
                     <el-carousel-item v-for="item in carouselData" :key="item.id">
                         <img :src="item.image" :title="item.title"/>
+                        <div class="carousel-img-bottom">
+                            <p>{{item.title}}</p>
+                            <button v-wave="{color: 'rgba(0, 0, 0, 0.7)'}">开始阅读</button>
+                        </div>
                     </el-carousel-item>
                 </el-carousel>
                 <div class="carousel-index">
@@ -95,10 +99,7 @@
                             </button>
                         </div>
                         <el-collapse-transition>
-                            <div class="gossip-comment-box" v-if="isOpenGossipCommentBox && item.id === this.gossipTempId">
-                                <Toolbar :editor="editorRef" :defaultConfig="toolbarConfig" :mode="mode" />
-                                <Editor style="height: 300px;" v-model="valueHtml" :defaultConfig="editorConfig" :mode="mode" @onCreated="handleCreated" @onFocus="handleFocus" />
-                            </div>
+                            <editor v-if="isOpenGossipCommentBox && item.id === this.gossipTempId"></editor>
                         </el-collapse-transition>
                     </li>
                 </ul>
@@ -117,68 +118,10 @@
     </div>
 </template>
 <script>
-import '@wangeditor/editor/dist/css/style.css'
-import { onBeforeUnmount, ref, shallowRef, onMounted } from 'vue'
-import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
-import { DomEditor } from '@wangeditor/editor'
+import editor from '@/components/editor.vue'
 export default {
     components: { 
-        Editor, Toolbar 
-    },
-    setup() {
-        const editorRef = shallowRef()
-        const valueHtml = ''
-        onMounted(() => {
-        })
-        const toolbarConfig = {
-            excludeKeys: [
-                'blockquote',
-                'header1',
-                'header2',
-                'header3',
-                'bulletedList',
-                'codeBlock',
-                'insertImage',
-                'insertLink',
-                'insertTable',
-                'insertVideo',
-                'justifyCenter',
-                'justifyLeft',
-                'justifyRight',
-                'numberedList',
-                'redo',
-                'todo',
-                'undo',
-                'uploadImage',
-                'group-image',
-                'fullScreen',
-                '|',
-                'clearStyle'
-            ]
-        }
-        const editorConfig = { placeholder: '', autoFocus: false }
-        onBeforeUnmount(() => {
-            const editor = editorRef.value
-            if (editor == null) return
-            editor.destroy()
-        })
-
-        const handleCreated = (editor) => {
-            editorRef.value = editor
-        }
-
-        const handleFocus = (editor) => {
-            // console.log(DomEditor.getToolbar(editor).getConfig().toolbarKeys)
-        }
-        return {
-            editorRef,
-            valueHtml,
-            mode: 'simple', // 或 'simple'
-            toolbarConfig,
-            editorConfig,
-            handleCreated,
-            handleFocus
-        }
+        editor
     },
     data(){
         return{
@@ -186,7 +129,7 @@ export default {
             carouselData:[
                 {
                     id: 0,
-                    title: 'test1',
+                    title: '焯尼玛',
                     image: require('@/assets/image/test.png')
                 },
                 {
@@ -400,17 +343,47 @@ export default {
             ::v-deep(.el-carousel)
             {
                 height: 100%;
-                img
+                .el-carousel__item
                 {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    transition: transform 0.5s;
+                    img
+                    {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        transition: transform 0.5s;
+                    }
+                    img:hover
+                    {
+                        transform: scale(1.02);
+                    }
+                    .carousel-img-bottom
+                    {
+                        width: 100%;
+                        position: absolute;
+                        bottom: 4rem;
+                        left: 0;
+                        display: flex;
+                        flex-direction: column;
+                        padding: 0 3rem;
+                        p
+                        {
+                            font-size: 1.2rem;
+                            font-weight: bold;
+                            color: #ffffff;
+                            letter-spacing: 0.08rem;
+                        }
+                        button
+                        {
+                            width: 4rem;
+                            height: 1.4rem;
+                            border-radius: 0.2rem;
+                            font-size: 0.6rem;
+                            background-color: #e54d42;
+                            margin-top: 1rem;
+                        }
+                    }
                 }
-                img:hover
-                {
-                    transform: scale(1.02);
-                }
+                
             }
             .carousel-index
             {
@@ -608,11 +581,11 @@ export default {
                     width: 100%;
                     margin: 0.8rem 0;
                     padding: 0.5rem;
-                    background-color: #ffffff;
                     border-radius: 0.3rem;
                     display: flex;
                     align-content: flex-start;
                     flex-wrap: wrap;
+                    transition: background-color 0.3s;
                     .gossip-title
                     {
                         width: 100%;
@@ -645,6 +618,7 @@ export default {
                                     {
                                         font-size: 0.75rem;
                                         font-weight: bold;
+                                        transition: color 0.3s;
                                     }
                                     span:nth-child(2)
                                     {
@@ -674,8 +648,8 @@ export default {
                         align-items: center;
                         span
                         {
-                            color: #777777;
                             font-size: 0.62rem;
+                            color: #777777;
                         }
                         span:nth-child(2)
                         {
@@ -691,38 +665,29 @@ export default {
                         {
                             flex: 1;
                             height: 1.8rem;
-                            background-color: rgb(245, 245, 245);
                             border-radius: 0.25rem;
                             cursor: pointer;
                             font-size: 0.7rem;
-                            color: #777777;
+                            transition: color 0.3s, background-color, 0.3s;
                         }
                         button:nth-child(2)
                         {
                             margin: 0 0.3rem;
                         }
                     }
-                    .gossip-comment-box
-                    {
-                        width: 100%;
-                        padding-top: 0.5rem;
-                    }
-                    ::v-deep(.w-e-full-screen-container)
-                    {
-                        z-index: 10;
-                    }
+                    
                 }
             }
             .visitor-box
             {
                 width: 100%;
                 border-radius: 0.25rem;
-                background-color: #ffffff;
                 display: grid;
                 grid-template-columns: 1fr 1fr 1fr;
                 padding: 1rem 0.5rem;
                 grid-row-gap: 0.5rem;
                 grid-column-gap: 0.5rem;
+                transition: background-color 0.3s;
                 .visitor-item
                 {
                     display: flex;
