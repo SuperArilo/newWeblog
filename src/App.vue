@@ -124,24 +124,30 @@ export default {
                 },
                 {
                     id: 1,
+                    title: '文章',
+                    path: '/article',
+                    iconClass: 'fa-book-open'
+                },
+                {
+                    id: 2,
                     title: '碎语',
                     path: '/say',
                     iconClass: 'fa-feather-alt'
                 },
                 {
-                    id: 2,
+                    id: 3,
                     title: '留言',
                     path: '',
                     iconClass: 'fa-comment-alt'
                 },
                 {
-                    id: 3,
+                    id: 4,
                     title: '友邻',
                     path: '',
                     iconClass: 'fa-user-friends'
                 },
                 {
-                    id: 4,
+                    id: 5,
                     title: '圈子',
                     path: '',
                     iconClass: 'fa-paw'
@@ -857,6 +863,7 @@ ul , li
         }
         h1 , h2 , h3 , h4 , h5 , p , table , pre
         {
+            transition: color 0.3s;
             margin: 0.5rem 0;
             line-height: 1.5;
         }

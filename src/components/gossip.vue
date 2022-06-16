@@ -213,7 +213,6 @@ export default {
             width: 100%;
             display: flex;
             justify-content: flex-end;
-            padding: 0 1rem;
             margin: 0.5rem 0;
             button
             {
