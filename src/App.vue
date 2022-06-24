@@ -123,12 +123,6 @@ export default {
                     iconClass: 'fa-home'
                 },
                 {
-                    id: 1,
-                    title: '文章',
-                    path: '/article',
-                    iconClass: 'fa-book-open'
-                },
-                {
                     id: 2,
                     title: '碎语',
                     path: '/say',
