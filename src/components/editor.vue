@@ -80,7 +80,6 @@ export default {
 .editor-box
 {
     width: 100%;
-    margin-top: 0.5rem;
     .toolbar
     {
         height: 1.9rem;

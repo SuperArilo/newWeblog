@@ -123,25 +123,25 @@ export default {
                     iconClass: 'fa-home'
                 },
                 {
-                    id: 2,
+                    id: 1,
                     title: '碎语',
                     path: '/say',
                     iconClass: 'fa-feather-alt'
                 },
                 {
-                    id: 3,
+                    id: 2,
                     title: '留言',
                     path: '',
                     iconClass: 'fa-comment-alt'
                 },
                 {
-                    id: 4,
+                    id: 3,
                     title: '友邻',
                     path: '',
                     iconClass: 'fa-user-friends'
                 },
                 {
-                    id: 5,
+                    id: 4,
                     title: '圈子',
                     path: '',
                     iconClass: 'fa-paw'
@@ -295,11 +295,12 @@ a
 }
 ::-webkit-scrollbar
 {
-    width: 0.3rem;
+    width: 0.4rem;
 }
 ::-webkit-scrollbar-thumb
 {
     background-color: rgb(79, 130, 241);
+    border-radius: 0.2rem;
 }
 ul , li
 {

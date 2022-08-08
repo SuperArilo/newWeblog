@@ -12,15 +12,58 @@
                             <span>六月 16, 2022</span>
                         </div>
                     </div>
+                    <div class="right-watch-sum">
+                        <i class="far fa-eye"/>
+                        <span>1120</span>
+                    </div>
                 </div>
             </nav>
-            
+            <div class="article-show-content editer-render" v-html="'<p>text</p>'">
+
+            </div>
+            <footer class="article-vistor">
+                <span class="article-vistor-title">评论</span>
+                <div class="vistor-editor-box">
+                    <editor/>
+                </div>
+                <div class="article-vistor-comment-list">
+                    <comment v-for="item in commentList" :key="item.id" :renderData="item"/>
+                </div>
+            </footer>
         </main>
     </div>
 </template>
 <script>
+import comment from '@/components/comment.vue'
+import editor from '@/components/editor.vue'
 export default {
+    components:{
+        comment, editor
+    },
+    data(){
+        return{
+            commentList: [
+                {
+                    id: 0,
+                    commentHead: require('@/assets/image/userHead.jpg'),
+                    commentName: '老王',
+                    commentTime: '2022-08-08',
+                    commentLike: '12',
+                    commentContent: '<p>aaaaaaaaaaa</p>'
+                },
+                {
+                    id: 1,
+                    commentHead: require('@/assets/image/userHead.jpg'),
+                    commentName: '老王',
+                    commentTime: '2022-08-08',
+                    commentLike: '12',
+                    commentContent: '<p>bbbbbbbbbb</p>'
+                }
+            ]
+        }
+    },
     mounted(){
+        
     }
 }
 </script>
@@ -33,11 +76,10 @@ export default {
     .article-container
     {
         width: 100%;
-        height: 92vh;
         margin-top: 1rem;
-        background-color: #ffffff;
         border-radius: 0.5rem;
         overflow: hidden;
+        transition: background-color 0.3s;
         .top-info
         {
             width: 100%;
@@ -56,6 +98,7 @@ export default {
                 padding: 0 1rem;
                 text-align: left;
                 word-break: break-all;
+                transition: color 0.3s;
             }
             .article-user-info
             {
@@ -74,6 +117,7 @@ export default {
                     img
                     {
                         width: 2.5rem;
+                        min-width: 2.5rem;
                         height: 2.5rem;
                         overflow: hidden;
                         border-radius: 50%;
@@ -85,6 +129,11 @@ export default {
                         display: flex;
                         flex-direction: column;
                         justify-content: space-around;
+                        white-space: nowrap;
+                        span
+                        {
+                            transition: color 0.3s;
+                        }
                         span:nth-child(1)
                         {
                             font-size: 0.78rem;
@@ -95,6 +144,57 @@ export default {
                         }
                     }
                 }
+                .right-watch-sum
+                {
+                    height: inherit;
+                    display: flex;
+                    align-items: center;
+                    span , i
+                    {
+                        transition: color 0.3s;
+                    }
+                    span
+                    {
+                        color: rgba(0, 0, 0, 0.87);
+                        font-size: 0.7rem;
+                        margin-left: 0.5rem;
+                    }
+                }
+            }
+        }
+        .article-show-content
+        {
+            width: 100%;
+            min-height: 40vh;
+            padding: 1rem;
+        }
+        .article-vistor
+        {
+            width: 100%;
+            padding: 0 1rem;
+            display: flex;
+            flex-direction: column;
+            .article-vistor-title
+            {
+                width: 100%;
+                height: 3.5rem;
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                font-size: 1rem;
+                color: rgba(0, 0, 0, 0.87);
+                transition: color 0.3s;
+            }
+            .vistor-editor-box
+            {
+                width: 100%;
+                border-radius: 0.3rem;
+                overflow: hidden;
+            }
+            .article-vistor-comment-list
+            {
+                width: 100%;
+                margin-top: 0.5rem;
             }
         }
     }

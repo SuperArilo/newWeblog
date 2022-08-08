@@ -38,63 +38,33 @@
                 <div class="submit-button">
                     <button type="button" v-wave="{color: 'rgba(0, 0, 0, 0.7)'}">提交</button>
                 </div>
-                <ul class="gossip-comment-list">
-                    <li>
-                        <header class="comment-top">
-                            <div class="comment-top-left">
-                                <img src="../assets/image/userHead.jpg"/>
-                                <div class="left-user-info">
-                                    <div>
-                                        <span>老曹</span>
-                                        <button type="button">回复</button>
-                                    </div>
-                                    <span class="comment-time">2021-06-03 11:25</span>
-                                </div>
-                            </div>
-                            <div class="comment-right-like">
-                                <i class="fas fa-heart"/>
-                                <span>12</span>
-                            </div>
-                        </header>
-                        <div class="editer-render">
-                            <p>后端太垃圾了</p>
-                        </div>
-                    </li>
-                    <li>
-                        <header class="comment-top">
-                            <div class="comment-top-left">
-                                <img src="../assets/image/userHead.jpg"/>
-                                <div class="left-user-info">
-                                    <div>
-                                        <span>老曹</span>
-                                        <button>回复</button>
-                                    </div>
-                                    <span class="comment-time">2021-06-03 11:25</span>
-                                </div>
-                            </div>
-                            <div class="comment-right-like">
-                                <i class="fas fa-heart"/>
-                                <span>12</span>
-                            </div>
-                        </header>
-                        <div class="editer-render">
-                            <p>后端太垃圾了</p>
-                        </div>
-                    </li>
-                </ul>
+                <div class="gossip-comment-list">
+                    <comment v-for="item in commentList" :key="item.id" :renderData="item"/>
+                </div>
             </footer>
         </el-collapse-transition>
     </div>
 </template>
 <script>
 import editor from '@/components/editor.vue'
+import comment from '@/components/comment.vue'
 export default {
     components: { 
-        editor
+        editor, comment
     },
     data(){
         return{
-            isOpenComment: false
+            isOpenComment: false,
+            commentList:[
+                {
+                    id: 0,
+                    commentHead: require('@/assets/image/userHead.jpg'),
+                    commentName: '老王',
+                    commentTime: '2022-08-08',
+                    commentLike: '12',
+                    commentContent: '<p>aaaaaaaaaaa</p>'
+                }
+            ]
         }
     },
     props:{
@@ -112,7 +82,7 @@ export default {
 .gossip-box
 {
     width: 100%;
-    margin: 0.8rem 0;
+    margin-top: 0.8rem;
     padding: 0.5rem;
     border-radius: 0.3rem;
     transition: background-color 0.3s;
@@ -208,6 +178,7 @@ export default {
     .gossip-comment-box
     {
         width: 100%;
+        padding-top: 0.5rem;
         .submit-button
         {
             width: 100%;
@@ -224,90 +195,6 @@ export default {
         .gossip-comment-list
         {
             width: 100%;
-            li
-            {
-                width: 100%;
-                padding-top: 0.5rem;
-                border-top: solid 1px rgb(211, 211, 211);
-                .comment-top
-                {
-                    width: 100%;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    .comment-top-left , .comment-right-like
-                    {
-                        height: 2.5rem;
-                        display: flex;
-                    }
-                    .comment-top-left
-                    {
-                        align-items: center;
-                        img
-                        {
-                            width: 2.2rem;
-                            height: 2.2rem;
-                            border-radius: 50%;
-                            overflow: hidden;
-                        }
-                        .left-user-info
-                        {
-                            height: inherit;
-                            display: flex;
-                            flex-direction: column;
-                            justify-content: space-around;
-                            margin-left: 0.5rem;
-                            div
-                            {
-                                span
-                                {
-                                    font-size: 0.75rem;
-                                    transition: color 0.3s;
-                                }
-                                button
-                                {
-                                    font-size: 0.5rem;
-                                    padding: 0.05rem 0.4rem;
-                                    border-radius: 0.3rem;
-                                    cursor: pointer;
-                                    margin-left: 0.5rem;
-                                    background-color: rgb(4, 120, 190);
-                                }
-                            }
-                            .comment-time
-                            {
-                                font-size: 0.6rem;
-                                color: #777777;
-                            }
-                        }
-                    }
-                    .comment-right-like
-                    {
-                        width: 2rem;
-                        flex-direction: column;
-                        justify-content: center;
-                        align-items: center;
-                        i
-                        {
-                            color: #777777;
-                            cursor: pointer;
-                            transition: transform 0.3s, color 0.3s;
-                        }
-                        i:hover
-                        {
-                            
-                            transform: scale(1.2);
-                            color: rgb(250, 73, 73);
-                        }
-                        span
-                        {
-                            font-size: 0.6rem;
-                            margin-top: 0.3rem;
-                            color: #777777;
-                        }
-                    }
-                }
-            }
         }
     }
 }

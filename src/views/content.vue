@@ -156,8 +156,6 @@ export default {
                     content: '<p>嗯哼哼，啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</P>'
                 }
             ],
-            gossipTempId: '',
-            isOpenGossipCommentBox: false,
             visitorList:[
                 {
                     id: 0,
@@ -235,6 +233,7 @@ export default {
     .index-carousel-box
     {
         width: 100%;
+        padding-top: 2.7rem;
         height: 100vh;
         display: flex;
         flex-direction: column;
@@ -552,11 +551,13 @@ export default {
                     {
                         font-size: 0.7rem;
                         margin: 0.3rem 0;
+                        transition: color 0.3s;
                     }
                     .visitor-time
                     {
                         font-size: 0.6rem;
                         color: #777777;
+                        transition: color 0.3s;
                     }
                 }
             }

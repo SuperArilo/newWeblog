@@ -15,6 +15,7 @@ export default {
 .index-main
 {
     width: 100%;
+    min-height: 100vh;
     .router-transform-enter-active, .router-transform-leave-active
     {
         transition: opacity 0.3s
