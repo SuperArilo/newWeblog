@@ -93,7 +93,7 @@ export default {
             carouselData:[
                 {
                     id: 0,
-                    title: '焯尼玛',
+                    title: 'test1',
                     image: require('@/assets/image/test.png')
                 },
                 {
@@ -159,7 +159,7 @@ export default {
             visitorList:[
                 {
                     id: 0,
-                    name: '大帅逼',
+                    name: '222',
                     userHead: require('@/assets/image/userHead.jpg'),
                     time: '4个月前'
                 },
@@ -382,7 +382,7 @@ export default {
             .title-function
             {
                 width: 100%;
-                height: 2.5rem;
+                height: 3.5rem;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -408,7 +408,7 @@ export default {
                 li
                 {
                     width: 100%;
-                    margin: 0.8rem 0;
+                    margin-bottom: 0.8rem;
                     border-radius: 0.5rem;
                     overflow: hidden;
                     transition: background-color 0.3s;
@@ -515,6 +515,10 @@ export default {
                     }
                 }
             }
+            .index-article-list li:last-child
+            {
+                margin-bottom: 0;
+            }
         }
         .right-lately-container
         {
@@ -524,6 +528,10 @@ export default {
                 display: flex;
                 align-content: flex-start;
                 flex-wrap: wrap;
+                .gossip-box:first-child
+                {
+                    margin-top: 0;
+                }
             }
             .visitor-box
             {
@@ -543,6 +551,7 @@ export default {
                     img
                     {
                         width: 2rem;
+                        min-width: 2rem;
                         height: 2rem;
                         border-radius: 50%;
                         overflow: hidden;

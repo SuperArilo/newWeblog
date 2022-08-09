@@ -14,6 +14,14 @@ const routes = [
             {
                 path: 'article',
                 component: () => import('@/views/article.vue')
+            },
+            {
+                path: 'guestbook',
+                component: () => import('@/views/guestbook.vue')
+            },
+            {
+                path: 'links',
+                component: () => import('@/views/links.vue')
             }
         ]
     },
@@ -25,7 +33,7 @@ const routes = [
 // const router = createRouter({history: createWebHistory(process.env.BASE_URL), routes})
 const router = createRouter({history: createWebHashHistory(), routes})
 router.beforeEach((to, from, next) => {
-    $('html,body').stop().animate({'scrollTop': 0})
+    $('.main-content').stop().animate({'scrollTop': 0})
     next()
 })
 export default router

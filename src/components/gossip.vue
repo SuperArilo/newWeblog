@@ -34,7 +34,36 @@
         </div>
         <el-collapse-transition>
             <footer v-if="this.isOpenComment" class="gossip-comment-box">
-                <editor/>
+                <editor :toolbarConfig="{
+                    excludeKeys: [
+                        'blockquote',
+                        'header1',
+                        'header2',
+                        'header3',
+                        'bulletedList',
+                        'codeBlock',
+                        'insertImage',
+                        'insertLink',
+                        'insertTable',
+                        'insertVideo',
+                        'justifyCenter',
+                        'justifyLeft',
+                        'justifyRight',
+                        'numberedList', 
+                        'redo',
+                        'todo',
+                        'undo',
+                        'uploadImage',
+                        'group-image',
+                        'fullScreen',
+                        '|',
+                        'clearStyle',
+                        'bold',
+                        'underline',
+                        'italic',
+                        'through'
+                    ]
+                }"/>
                 <div class="submit-button">
                     <button type="button" v-wave="{color: 'rgba(0, 0, 0, 0.7)'}">提交</button>
                 </div>
@@ -100,6 +129,7 @@ export default {
             img
             {
                 width: 2.2rem;
+                min-width: 2.2rem;
                 height: 2.2rem;
                 overflow: hidden;
                 border-radius: 50%;
@@ -182,12 +212,15 @@ export default {
         .submit-button
         {
             width: 100%;
+            margin: 0.5rem 0;
             display: flex;
             justify-content: flex-end;
-            margin: 0.5rem 0;
+            align-items: center;
+            padding: 0 1rem;
             button
             {
-                padding: 0.3rem 0.6rem;
+                height: 1.5rem;
+                padding: 0 0.6rem;
                 border-radius: 0.3rem;
                 background-color: rgb(4, 120, 190);
             }

@@ -1,6 +1,6 @@
 <template>
     <div class="editor-box" :class="this.$store.getters.darkModel ? 'editor-dark-model':''">
-        <Toolbar class="toolbar" :editor="editorRef" :defaultConfig="toolbarConfig" :mode="mode" />
+        <Toolbar class="toolbar" :editor="editorRef" :defaultConfig="this.toolbarConfig" :mode="mode" />
         <Editor style="height: 300px;" v-model="valueHtml" :defaultConfig="editorConfig" :mode="mode" @onCreated="handleCreated" @onFocus="handleFocus" />
     </div>
 </template>
@@ -8,12 +8,17 @@
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { DomEditor } from '@wangeditor/editor'
 import '@wangeditor/editor/dist/css/style.css'
-import { onBeforeUnmount, ref, shallowRef, onMounted } from 'vue'
+import { onBeforeUnmount, ref, shallowRef, onMounted , defineProps, toRefs } from 'vue'
 export default {
     components: { 
         Editor, Toolbar
     },
-    setup() {
+    props:{
+        toolbarConfig: {
+            type: Object
+        }
+    },
+    setup(props) {
         const editorRef = shallowRef()
         const valueHtml = ''
         onMounted(() => {
@@ -33,7 +38,7 @@ export default {
                 'justifyCenter',
                 'justifyLeft',
                 'justifyRight',
-                'numberedList',
+                'numberedList', 
                 'redo',
                 'todo',
                 'undo',
@@ -68,7 +73,6 @@ export default {
             editorRef,
             valueHtml,
             mode: 'simple', // 或 'simple'
-            toolbarConfig,
             editorConfig,
             handleCreated,
             handleFocus
@@ -82,7 +86,7 @@ export default {
     width: 100%;
     .toolbar
     {
-        height: 1.9rem;
+        min-height: 1.9rem;
         transition: border 0.3s;
         border-bottom: solid 1px rgb(212, 212, 212);
     }

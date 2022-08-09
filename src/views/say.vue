@@ -39,8 +39,9 @@ export default {
 .say-gossip
 {
     width: 100%;
-    min-height: 100vh;
+    max-width: 768px;
     padding-top: 2.7rem;
+    margin: 0 auto;
     .say-gossip-list
     {
         width: 100%;

@@ -284,6 +284,72 @@
                 }
             }
         }
+        .guestbook .guestbook-comment-list .gossip-box
+        {
+            background-color: rgb(47, 49, 51);
+            .gossip-title .gossip-title-left .gossip-title-left-info
+            {
+                div span:nth-child(1)
+                {
+                    color: #ffffff;
+                }
+            }
+            .gossip-button-box button
+            {
+                background-color: rgb(43, 43, 43);
+                color: #ffffff;
+            }
+            .gossip-comment-box .gossip-comment-list
+            {
+                .comment-box
+                {
+                    border-top: solid 1px rgb(158, 158, 158);
+                    span
+                    {
+                        color: #ffffff !important;
+                    }
+                }
+            }
+        }
+        .guestbook 
+        {
+            .guestbook-editor-box
+            {
+                background-color: rgb(47, 49, 51);
+            }
+            .guestbook-comment-list
+            {
+                background-color: rgb(47, 49, 51);
+                .comment-box
+                {
+                    border-bottom: solid 1px rgb(158, 158, 158);
+                    span
+                    {
+                        color: #ffffff !important;
+                    }
+                    
+                }
+            }
+        }
+        .links-content
+        {
+            .links-title
+            {
+                color: #eeeeee;
+            }
+            .rules-content
+            {
+                background-color: rgb(47, 49, 51);
+            }
+            .links-friend-list .links-friend-item
+            {
+                background-color: rgb(47, 49, 51);
+                p
+                {
+                    color: #ffffff;
+                }
+            }
+        }
     }
     .editer-render
     {
@@ -545,6 +611,37 @@
                 .comment-box
                 {
                     border-top: solid 1px rgba(0, 0, 0, 0.12);
+                }
+            }
+        }
+        .guestbook
+        {
+            .guestbook-editor-box
+            {
+                background-color: #ffffff;
+            }
+            .guestbook-comment-list
+            {
+                background-color: #ffffff;
+                .comment-box
+                {
+                    border-bottom: solid 1px rgba(0, 0, 0, 0.12);
+                }
+            }
+            
+        }
+        .links-content
+        {
+            .rules-content
+            {
+                background-color: #ffffff;
+            }
+            .links-friend-list .links-friend-item
+            {
+                background-color: #ffffff;
+                p
+                {
+                    color: rgba(0,0,0,.6);
                 }
             }
         }

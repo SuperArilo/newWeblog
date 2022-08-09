@@ -24,7 +24,36 @@
             <footer class="article-vistor">
                 <span class="article-vistor-title">评论</span>
                 <div class="vistor-editor-box">
-                    <editor/>
+                    <editor :toolbarConfig="{
+                        excludeKeys: [
+                            'blockquote',
+                            'header1',
+                            'header2',
+                            'header3',
+                            'bulletedList',
+                            'codeBlock',
+                            'insertImage',
+                            'insertLink',
+                            'insertTable',
+                            'insertVideo',
+                            'justifyCenter',
+                            'justifyLeft',
+                            'justifyRight',
+                            'numberedList', 
+                            'redo',
+                            'todo',
+                            'undo',
+                            'uploadImage',
+                            'group-image',
+                            'fullScreen',
+                            '|',
+                            'clearStyle',
+                            'bold',
+                            'underline',
+                            'italic',
+                            'through'
+                        ]
+                    }"/>
                 </div>
                 <div class="article-vistor-comment-list">
                     <comment v-for="item in commentList" :key="item.id" :renderData="item"/>
@@ -70,6 +99,7 @@ export default {
 <style lang="scss" scoped>
 .article-content
 {
+    width: 100%;
     max-width: 768px;
     margin: 0 auto;
     padding-top: 2.7rem;

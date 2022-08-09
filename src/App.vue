@@ -1,7 +1,7 @@
 <template>
-    <div class="main-content" :class="this.$store.getters.darkModel ? 'dark-model':'light-model'">
+    <div class="main-content" ref="mainContent" :class="this.$store.getters.darkModel ? 'dark-model':'light-model'">
         <nav class="top-nav-pc" v-if="!this.$store.getters.isPhone">
-            <span class="left-name">鸽王BLOG</span>
+            <span class="left-name">SPARIC</span>
             <ul class="menu-list">
                 <li class="menu-list-item" v-for="item in menuList" :key="item.id" @click="menuListFunc(item.id, item.path)" :class="this.menuListIndex === item.id ? 'menu-list-item-active' : ''" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">{{item.title}}</li>
             </ul>
@@ -17,7 +17,7 @@
         </nav>
         <nav class="top-nav-mobile" v-else>
             <span class="left-placeholder"></span>
-            <span class="center-name">鸽王BLOG</span>
+            <span class="center-name">SPARIC</span>
             <div class="menu-fold" @click="this.isOpenDrawer = true" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
                 <i class="fas fa-bars"/>
             </div>
@@ -29,77 +29,83 @@
                 </transition>
             </router-view>
         </div>
+        <footer class="footer-info">
+            <div class="footer-info-item">
+                <span>© 2022 sparic.com All Rights Reserved.</span>
+            </div>
+            <div class="footer-info-item">
+                <span>备案号</span>
+            </div>
+        </footer>
         <transition name="app-mask" mode="out-in">
-            <keep-alive>
-                <div class="app-mask" v-if="this.isOpenLogin || this.isOpenDrawer" :style="[this.isOpenLogin ? 'justify-content: center;':'', this.isOpenDrawer ? 'justify-content: flex-start;':'']" @click="closeUserInfoBox">
-                    <div class="login-box" :style="this.$store.getters.isPhone ? 'width: 100%;height: 100%;':'width: 24rem;'" v-if="this.isOpenLogin">
-                        <header class="top-function">
-                            <div class="left-back" @click="closeLoginBox" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
-                                <i class="far fa-arrow-alt-circle-left"/>
-                            </div>
-                        </header>
-                        <div class="top-tips">
-                            <span class="left-span">欢迎回来,</span>
-                            <button type="button" class="right-register" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">注册</button>
+            <div class="app-mask" v-if="this.isOpenLogin || this.isOpenDrawer" :style="[this.isOpenLogin ? 'justify-content: center;':'', this.isOpenDrawer ? 'justify-content: flex-start;':'']" @click="closeUserInfoBox">
+                <div class="login-box" :style="this.$store.getters.isPhone ? 'width: 100%;height: 100%;':'width: 24rem;'" v-if="this.isOpenLogin">
+                    <header class="top-function">
+                        <div class="left-back" @click="closeLoginBox" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
+                            <i class="far fa-arrow-alt-circle-left"/>
                         </div>
-                        <p class="top-tips-line">请填写以下信息进行登录</p>
-                        <div class="input-list">
-                            <label class="input-item">
-                                <div class="input-top-div">
-                                    <span>用户名</span>
-                                    <span>*</span>
-                                </div>
-                                <input type="text" @change="checkUserNameMatch" placeholder="请输入用户名"/>
-                                <div class="input-tips-div">
-                                    <span>{{userNameFailMessage}}</span>
-                                </div>
-                            </label>
-                            <form class="input-password">
-                                <div class="input-top-div">
-                                    <span>密码</span>
-                                    <span>*</span>
-                                </div>
-                                <div class="input-password-lable">
-                                    <input :type="this.isShowPassword ? 'text':'password'" maxlength="16" placeholder="请输入密码" autocomplete="off"/>
-                                    <i class="far input-show-password" :class="this.isShowPassword ? 'fa-eye-slash':'fa-eye'" @click="this.isShowPassword =! this.isShowPassword" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
-                                </div>
-                            </form>
-                        </div>
-                        <button type="button" class="login-button" :class="this.$store.getters.isPhone ? 'login-button-mobile':'login-button-pc'" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">登录</button>
-                        <span class="other-login-tips">其他登录方式</span>
-                        <div class="other-login-list">
-                            <i class="fab fa-qq" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
-                            <i class="fab fa-github" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
-                            <i class="fab fa-google" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
-                            <i class="fab fa-xbox" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
-                        </div>
+                    </header>
+                    <div class="top-tips">
+                        <span class="left-span">欢迎回来,</span>
+                        <button type="button" class="right-register" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">注册</button>
                     </div>
-                    <div class="user-info-box" v-if="this.isOpenDrawer">
-                        <div class="user-top-box">
-                            <div class="left-dl-model" @click="chagenDarkModel" v-wave="{color: 'rgba(255, 255, 255, 0.7)'}">
-                                <transition name="dark-model" mode="out-in">
-                                    <i class="fas fa-moon" v-if="!this.$store.getters.darkModel"/>
-                                    <i class="fas fa-sun" v-else/>
-                                </transition>
+                    <p class="top-tips-line">请填写以下信息进行登录</p>
+                    <div class="input-list">
+                        <label class="input-item">
+                            <div class="input-top-div">
+                                <span>用户名</span>
+                                <span>*</span>
                             </div>
-                        </div>
-                        <div class="user-head">
-                            <img src=""/>
-                            <span>鸽王老曹</span>
-                        </div>
-                        <ul class="drawer-menu">
-                            <li class="drawer-menu-item" v-for="item in menuList" :key="item.id" @click="menuListFunc(item.id, item.path)" :class="item.id === this.menuListIndex ? 'drawer-menu-item-active':''"  v-wave="{color: 'rgba(255, 255, 255, 0.7)'}">
-                                <i class="fas" :class="item.iconClass"/>
-                                <span>{{item.title}}</span>
-                            </li>
-                        </ul>
-                        <button class="drawer-login-button" @click="openLoginBox"  v-wave="{color: 'rgba(0, 0, 0, 0.7)'}">登录</button>
+                            <input type="text" @change="checkUserNameMatch" placeholder="请输入用户名"/>
+                            <div class="input-tips-div">
+                                <span>{{userNameFailMessage}}</span>
+                            </div>
+                        </label>
+                        <form class="input-password">
+                            <div class="input-top-div">
+                                <span>密码</span>
+                                <span>*</span>
+                            </div>
+                            <div class="input-password-lable">
+                                <input :type="this.isShowPassword ? 'text':'password'" maxlength="16" placeholder="请输入密码" autocomplete="off"/>
+                                <i class="far input-show-password" :class="this.isShowPassword ? 'fa-eye-slash':'fa-eye'" @click="this.isShowPassword =! this.isShowPassword" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
+                            </div>
+                        </form>
+                    </div>
+                    <button type="button" class="login-button" :class="this.$store.getters.isPhone ? 'login-button-mobile':'login-button-pc'" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">登录</button>
+                    <span class="other-login-tips">其他登录方式</span>
+                    <div class="other-login-list">
+                        <i class="fab fa-qq" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
+                        <i class="fab fa-github" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
+                        <i class="fab fa-google" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
+                        <i class="fab fa-xbox" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
                     </div>
                 </div>
-            </keep-alive>
+                <div class="user-info-box" v-if="this.isOpenDrawer">
+                    <div class="user-top-box">
+                        <div class="left-dl-model" @click="chagenDarkModel" v-wave="{color: 'rgba(255, 255, 255, 0.7)'}">
+                            <transition name="dark-model" mode="out-in">
+                                <i class="fas fa-moon" v-if="!this.$store.getters.darkModel"/>
+                                <i class="fas fa-sun" v-else/>
+                            </transition>
+                        </div>
+                    </div>
+                    <div class="user-head">
+                        <img src="./assets/image/userHead.jpg"/>
+                        <span>SPARIC</span>
+                    </div>
+                    <ul class="drawer-menu">
+                        <li class="drawer-menu-item" v-for="item in menuList" :key="item.id" @click="menuListFunc(item.id, item.path)" :class="item.id === this.menuListIndex ? 'drawer-menu-item-active':''"  v-wave="{color: 'rgba(255, 255, 255, 0.7)'}">
+                            <i class="fas" :class="item.iconClass"/>
+                            <span>{{item.title}}</span>
+                        </li>
+                    </ul>
+                    <button class="drawer-login-button" @click="openLoginBox"  v-wave="{color: 'rgba(0, 0, 0, 0.7)'}">登录</button>
+                </div>
+            </div>
         </transition>
         <transition name="scroll-up" mode="out-in">
-            <div v-show="this.$store.getters.windowScrollValue >= 400" class="scroll-up" @click="scrollToTop">
+            <div v-show="this.$store.getters.windowScrollValue >= 400" class="scroll-up" @click="scrollToTop" @reScrollTop="reScrollTop">
                 <i class="far fa-arrow-alt-circle-up"/>
                 <span>UP</span>
             </div>
@@ -131,13 +137,13 @@ export default {
                 {
                     id: 2,
                     title: '留言',
-                    path: '',
+                    path: '/guestbook',
                     iconClass: 'fa-comment-alt'
                 },
                 {
                     id: 3,
                     title: '友邻',
-                    path: '',
+                    path: '/links',
                     iconClass: 'fa-user-friends'
                 },
                 {
@@ -240,7 +246,7 @@ export default {
             }
         },
         scrollToTop(){
-            $('html,body').stop().animate({'scrollTop': 0})
+            $(this.$refs.mainContent).stop().animate({'scrollTop': 0})
         },
         scrollValue(e){
             this.$store.commit('windowScrollValueSet', $(e.target).scrollTop())
@@ -265,9 +271,10 @@ img
 body, html
 {
     width: 100%;
+    height: 100%;
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
     overflow-x: hidden;
-    overflow-y: overlay;
+    overflow-y: hidden;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
     .img-viewr__body-lock
     {
@@ -314,8 +321,11 @@ ul , li
     {
         width: 100%;
         height: 100%;
-        transition: background 0.3s;
+        transition: background-color 0.3s;
         position: relative;
+        display: flex;
+        flex-direction: column;
+        overflow-y: overlay;
         .top-nav-pc , .top-nav-mobile
         {
             width: 100%;
@@ -417,6 +427,7 @@ ul , li
         .router-content
         {
             width: 100%;
+            flex: 1;
             max-width: 1080px;
             margin: 0 auto;
             padding: 0 2rem;
@@ -874,6 +885,27 @@ ul , li
             th
             {
                 text-align: center;
+            }
+        }
+    }
+    .footer-info
+    {
+        width: 100%;
+        height: 6rem;
+        min-height: 6rem;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        .footer-info-item
+        {
+            display: flex;
+            align-items: center;
+            span , a , p
+            {
+                font-size: 0.75rem;
+                color: #3c4248;
             }
         }
     }
