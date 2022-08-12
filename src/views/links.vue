@@ -1,9 +1,9 @@
 <template>
     <div class="links-content">
         <p class="rules-title">申请规则</p>
-        <header class="rules-content editer-render" v-html="'<p>测试</p>'"></header>
+        <header class="rules-content editer-render" v-html="'<p>测试</p><p>测试</p><p>测试</p><p>测试</p>'"></header>
         <p class="links-title">朋友们 (默认按添加时间排序)</p>
-        <main class="links-friend-list">
+        <main class="links-friend-list" :class="this.$store.getters.isPhone ? 'links-friend-list-mobile':'links-friend-list-pc'">
             <div class="links-friend-item" v-for="item in friendList" :key="item.id">
                 <img :src="item.head" :title="item.name"/>
                 <div class="friend-info">
@@ -202,10 +202,6 @@ export default {
         width: 100%;
         min-height: 12rem;
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 4.5rem 4.5rem;
-        grid-row-gap: 1.6rem;
-        grid-column-gap: 1.6rem;
         transition: background-color 0.3s;
         .links-friend-item
         {
@@ -251,6 +247,19 @@ export default {
                 }
             }
         }
+    }
+    .links-friend-list-pc
+    {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 4.5rem 4.5rem;
+        grid-row-gap: 1.6rem;
+        grid-column-gap: 1.6rem;
+    }
+    .links-friend-list-mobile
+    {
+        grid-template-columns: 1fr;
+        grid-template-rows: 4.5rem;
+        grid-row-gap: 1.6rem;
     }
 }
 </style>

@@ -38,16 +38,16 @@
             </div>
         </footer>
         <transition name="app-mask" mode="out-in">
-            <div class="app-mask" v-if="this.isOpenLogin || this.isOpenDrawer" :style="[this.isOpenLogin ? 'justify-content: center;':'', this.isOpenDrawer ? 'justify-content: flex-start;':'']" @click="closeUserInfoBox">
+            <div class="app-mask" v-if="this.isOpenLogin || this.isOpenDrawer || this.isOpenRegister" :style="[this.isOpenLogin || this.isOpenRegister ? 'justify-content: center;':'', this.isOpenDrawer ? 'justify-content: flex-start;':'']" @click="closeUserInfoBox">
                 <div class="login-box" :style="this.$store.getters.isPhone ? 'width: 100%;height: 100%;':'width: 24rem;'" v-if="this.isOpenLogin">
                     <header class="top-function">
-                        <div class="left-back" @click="closeLoginBox" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
+                        <div class="left-back" @click="closeAppMask" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
                             <i class="far fa-arrow-alt-circle-left"/>
                         </div>
                     </header>
                     <div class="top-tips">
                         <span class="left-span">欢迎回来,</span>
-                        <button type="button" class="right-register" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">注册</button>
+                        <button type="button" class="right-register" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}" @click="openRegisterBox">注册</button>
                     </div>
                     <p class="top-tips-line">请填写以下信息进行登录</p>
                     <div class="input-list">
@@ -70,9 +70,12 @@
                                 <input :type="this.isShowPassword ? 'text':'password'" maxlength="16" placeholder="请输入密码" autocomplete="off"/>
                                 <i class="far input-show-password" :class="this.isShowPassword ? 'fa-eye-slash':'fa-eye'" @click="this.isShowPassword =! this.isShowPassword" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
                             </div>
+                            <div class="input-tips-div">
+                                <span></span>
+                            </div>
                         </form>
                     </div>
-                    <button type="button" class="login-button" :class="this.$store.getters.isPhone ? 'login-button-mobile':'login-button-pc'" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">登录</button>
+                    <button type="button" class="confirm-button" :class="this.$store.getters.isPhone ? 'confirm-button-mobile':'confirm-button-pc'" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">登录</button>
                     <span class="other-login-tips">其他登录方式</span>
                     <div class="other-login-list">
                         <i class="fab fa-qq" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
@@ -101,6 +104,54 @@
                         </li>
                     </ul>
                     <button class="drawer-login-button" @click="openLoginBox"  v-wave="{color: 'rgba(0, 0, 0, 0.7)'}">登录</button>
+                </div>
+                <div class="register-box" :style="this.$store.getters.isPhone ? 'width: 100%;height: 100%;':'width: 24rem;'" v-if="this.isOpenRegister">
+                    <header class="top-function">
+                        <div class="left-back" @click="closeAppMask" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
+                            <i class="far fa-arrow-alt-circle-left"/>
+                        </div>
+                    </header>
+                    <div class="top-tips">
+                        <span class="left-span">欢迎您，</span>
+                        <button type="button" class="right-register" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}" @click="openLoginBox">登录</button>
+                    </div>
+                    <p class="top-tips-line">请填写以下信息进行注册</p>
+                    <div class="input-list">
+                        <label class="input-item">
+                            <div class="input-top-div">
+                                <span>邮箱</span>
+                                <span>*</span>
+                            </div>
+                            <input type="text" placeholder="请输入邮箱"/>
+                            <div class="input-tips-div">
+                                <span></span>
+                            </div>
+                        </label>
+                        <form class="input-password">
+                            <div class="input-top-div">
+                                <span>密码</span>
+                                <span>*</span>
+                            </div>
+                            <div class="input-password-lable">
+                                <input :type="this.isShowPassword ? 'text':'password'" maxlength="16" placeholder="请输入密码" autocomplete="off"/>
+                                <i class="far input-show-password" :class="this.isShowPassword ? 'fa-eye-slash':'fa-eye'" @click="this.isShowPassword =! this.isShowPassword" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
+                            </div>
+                            <div class="input-tips-div">
+                                <span></span>
+                            </div>
+                        </form>
+                        <label class="input-item">
+                            <div class="input-top-div">
+                                <span>昵称</span>
+                                <span>*</span>
+                            </div>
+                            <input type="text" placeholder="请输入昵称"/>
+                            <div class="input-tips-div">
+                                <span></span>
+                            </div>
+                        </label>
+                    </div>
+                    <button type="button" class="confirm-button" :class="this.$store.getters.isPhone ? 'confirm-button-mobile':'confirm-button-pc'" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">注册</button>
                 </div>
             </div>
         </transition>
@@ -149,12 +200,13 @@ export default {
                 {
                     id: 4,
                     title: '圈子',
-                    path: '',
+                    path: '/friends',
                     iconClass: 'fa-paw'
                 }
             ],
             isOpenDrawer: false,
             isOpenLogin: false,
+            isOpenRegister: false,
             isShowPassword: false,
             userNameFailMessage: ''
         }
@@ -207,21 +259,31 @@ export default {
         },
         openLoginBox(){
             if(this.isOpenLogin) return
-            if(this.isOpenDrawer){
-                this.isOpenDrawer = false
-            }
+            this.isOpenDrawer = false
+            this.isOpenRegister = false
             setTimeout(() => {
                 this.isOpenLogin = true
-            }, 100)
+            }, 200)
             this.userNameFailMessage = ''
             this.isShowPassword = false
         },
-        closeLoginBox(){
-            if(this.isOpenLogin){
+        closeAppMask(){
+            if(this.isOpenLogin || this.isOpenRegister){
                 setTimeout(() => {
                     this.isOpenLogin = false
+                    this.isOpenRegister = false
                 }, 400)
             }
+        },
+        openRegisterBox(){
+            if(this.isOpenRegister) return
+            if(this.isOpenDrawer){
+                this.isOpenDrawer = false
+            }
+            this.isOpenLogin = false
+            setTimeout(() => {
+                this.isOpenRegister = true
+            }, 200)
         },
         checkUserNameMatch(e){
             let value = e.target.value
@@ -462,156 +524,6 @@ ul , li
         align-items: center;
         .login-box
         {
-            box-shadow: 0 1.2rem 2.5rem -1rem rgba(0, 0, 0, 0.05);
-            border-radius: 0.3rem;
-            transition: transform 0.3s;
-            padding: 1rem 1.5rem;
-            .top-function
-            {
-                width: 100%;
-                height: 2rem;
-                .left-back
-                {
-                    width: 3rem;
-                    height: 2rem;
-                    border-radius: 0.5rem;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    cursor: pointer;
-                    i
-                    {
-                        transition: color 0.3s;
-                        font-size: 1.5rem;
-                    }
-                }
-            }
-            .top-tips
-            {
-                width: 100%;
-                margin-top: 1.5rem;
-                display: flex;
-                justify-content: space-between;
-                .left-span
-                {
-                    font-size: 1.15rem;
-                    letter-spacing: 0.1rem;
-                    font-weight: bold;
-                }
-                .right-register
-                {
-                    width: 3.5rem;
-                    height: 1.8rem;
-                    color: #ec558c;
-                    font-size: 0.82rem;
-                    border-radius: 0.2rem;
-                }
-            }
-            .top-tips-line
-            {
-                width: 100%;
-                color: #999;
-                font-size: 0.9rem;
-                letter-spacing: 0.1rem;
-                margin-bottom: 1.5rem;
-            }
-            .input-list
-            {
-                width: 100%;
-                .input-item , .input-password
-                {
-                    display: flex;
-                    flex-direction: column;
-                    .input-top-div
-                    {
-                        width: 100%;
-                        display: flex;
-                        justify-content: flex-start;
-                        span
-                        {
-                            height: 1rem;
-                            display: flex;
-                        }
-                        span:nth-child(1)
-                        {
-                            align-items: center;
-                            font-size: 0.75rem;
-                            font-weight: bold;
-                        }
-                        span:nth-child(2)
-                        {
-                            align-items: flex-start;
-                            color: red;
-                        }
-                    }
-                    .input-tips-div
-                    {
-                        width: 100%;
-                        height: 1rem;
-                        span
-                        {
-                            font-size: 0.6rem;
-                            color: red;
-                        }
-                    }
-                    input , .input-password-lable input
-                    {
-                        width: 100%;
-                        height: 2rem;
-                        border-radius: 0.3rem;
-                        border: none;
-                        margin-top: 0.5rem;
-                        transition: all 0.3s;
-                        outline: none;
-                        padding: 0 0.8rem;
-                        border: solid 1px transparent;
-                    }
-                    
-                }
-                .input-item
-                {
-                    margin-bottom: 0.5rem;
-                }
-                .input-password .input-password-lable
-                {
-                    width: 100%;
-                    display: flex;
-                    .input-show-password
-                    {
-                        min-width: 2.5rem;
-                        flex: 1;
-                        margin-left: 0.5rem;
-                        margin-top: 0.5rem;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        cursor: pointer;
-                        border-radius: 0.6rem;
-                        transition: color 0.3s;
-                    }
-                    input[type="password"]::-ms-reveal
-                    {
-                        display: none;
-                    }
-                }
-            }
-            .login-button
-            {
-                width: 100%;
-                height: 2.4rem;
-                border-radius: 1.2rem;
-                font-size: 0.8rem;
-                letter-spacing: 0.1rem;
-                transition: all 0.3s;
-            }
-            .login-button-pc
-            {
-                margin: 1.5rem 0;
-            }
-            .login-button-mobile
-            {
-                margin: 4rem 0 1rem 0;
-            }
             .other-login-tips
             {
                 width: 100%;
@@ -772,6 +684,156 @@ ul , li
                 letter-spacing: 0.2rem;
             }
         }
+        .login-box , .register-box
+        {
+            box-shadow: 0 1.2rem 2.5rem -1rem rgba(0, 0, 0, 0.05);
+            border-radius: 0.3rem;
+            transition: transform 0.3s;
+            padding: 1rem 1.5rem;
+            .top-function
+            {
+                width: 100%;
+                height: 2rem;
+                .left-back
+                {
+                    width: 3rem;
+                    height: 2rem;
+                    border-radius: 0.5rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    cursor: pointer;
+                    i
+                    {
+                        transition: color 0.3s;
+                        font-size: 1.5rem;
+                    }
+                }
+            }
+            .top-tips
+            {
+                width: 100%;
+                margin-top: 1.5rem;
+                display: flex;
+                justify-content: space-between;
+                .left-span
+                {
+                    font-size: 1.15rem;
+                    letter-spacing: 0.1rem;
+                    font-weight: bold;
+                }
+                .right-register
+                {
+                    width: 3.5rem;
+                    height: 1.8rem;
+                    color: #ec558c;
+                    font-size: 0.82rem;
+                    border-radius: 0.2rem;
+                }
+            }
+            .top-tips-line
+            {
+                width: 100%;
+                color: #999;
+                font-size: 0.9rem;
+                letter-spacing: 0.1rem;
+                margin-bottom: 1.5rem;
+            }
+            .input-list
+            {
+                width: 100%;
+                .input-item , .input-password
+                {
+                    display: flex;
+                    flex-direction: column;
+                    margin-bottom: 0.5rem;
+                    .input-top-div
+                    {
+                        width: 100%;
+                        display: flex;
+                        justify-content: flex-start;
+                        span
+                        {
+                            height: 1rem;
+                            display: flex;
+                        }
+                        span:nth-child(1)
+                        {
+                            align-items: center;
+                            font-size: 0.75rem;
+                            font-weight: bold;
+                        }
+                        span:nth-child(2)
+                        {
+                            align-items: flex-start;
+                            color: red;
+                        }
+                    }
+                    .input-tips-div
+                    {
+                        width: 100%;
+                        height: 1rem;
+                        span
+                        {
+                            font-size: 0.6rem;
+                            color: red;
+                        }
+                    }
+                    input , .input-password-lable input
+                    {
+                        width: 100%;
+                        height: 2rem;
+                        border-radius: 0.3rem;
+                        border: none;
+                        margin-top: 0.5rem;
+                        transition: all 0.3s;
+                        outline: none;
+                        padding: 0 0.8rem;
+                        border: solid 1px transparent;
+                    }
+                    
+                }
+                .input-password .input-password-lable
+                {
+                    width: 100%;
+                    display: flex;
+                    .input-show-password
+                    {
+                        min-width: 2.5rem;
+                        flex: 1;
+                        margin-left: 0.5rem;
+                        margin-top: 0.5rem;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        cursor: pointer;
+                        border-radius: 0.6rem;
+                        transition: color 0.3s;
+                    }
+                    input[type="password"]::-ms-reveal
+                    {
+                        display: none;
+                    }
+                }
+            }
+            .confirm-button
+            {
+                width: 100%;
+                height: 2.4rem;
+                border-radius: 1.2rem;
+                font-size: 0.8rem;
+                letter-spacing: 0.1rem;
+                transition: all 0.3s;
+            }
+            .confirm-button-pc
+            {
+                margin: 1.5rem 0;
+            }
+            .confirm-button-mobile
+            {
+                margin: 4rem 0 1rem 0;
+            }
+        }
     }
     .app-mask-enter-active, .app-mask-leave-active
     {
@@ -780,7 +842,7 @@ ul , li
     .app-mask-enter-from , .app-mask-leave-to
     {
         opacity: 0;
-        .login-box
+        .login-box , .register-box
         {
             transform: translateY(300%);
         }
@@ -792,13 +854,9 @@ ul , li
     .app-mask-enter-to , .app-mask-leave-from
     {
         opacity: 1;
-        .login-box
+        .login-box , .user-info-box , .register-box
         {
             transform: translateY(0);
-        }
-        .user-info-box
-        {
-            transform: translateX(0);
         }
     }
     .scroll-up

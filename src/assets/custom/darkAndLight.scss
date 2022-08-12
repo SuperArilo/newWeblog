@@ -40,7 +40,7 @@
     }
     .app-mask
     {
-        .login-box
+        .login-box , .register-box
         {
             background-color: #2f3133;
             .top-function
@@ -86,11 +86,11 @@
                     color: #ffffff;
                 }
             }
-            .login-button
+            .confirm-button
             {
                 background-color: #272727;
             }
-            .login-button:hover
+            .confirm-button:hover
             {
                 background-color: #535353;
             }
@@ -425,7 +425,7 @@
     }
     .app-mask
     {
-        .login-box
+        .login-box , .register-box
         {
             background-color: #ffffff;
             .top-function
@@ -461,11 +461,11 @@
                     color: rgb(111, 111, 111);
                 }
             }
-            .login-button
+            .confirm-button
             {
                 background-color: #0478be;
             }
-            .login-button:hover
+            .confirm-button:hover
             {
                 background-color: #0688da;
             }
