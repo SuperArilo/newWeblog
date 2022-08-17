@@ -1,27 +1,24 @@
 import axios from 'axios'
 axios.defaults.withCredentials = false
 const service = axios.create({
-    baseURL: '',
+    baseURL: 'http://localhost:3090',
     timeout: 15000
 })
-service.interceptors.request.use(config => {
-    if(sessionStorage.getItem('token') === null){
+service.interceptors.request.use( config => {
+    if(localStorage.getItem('token') === null){
         return config
     }
-    if(sessionStorage.getItem('token')){
-        config.headers.token = sessionStorage.getItem('token')
+    if(localStorage.getItem('token')){
+        config.headers.token = localStorage.getItem('token')
         return config
     }
 }, error => {
-    return Promise.reject(error.response.data)
+    return Promise.reject(error)
 })
 service.interceptors.response.use( response => {
-        if(response.data.code === 401 || response.data.code === 403){
-            sessionStorage.removeItem('token')
-        }
         return Promise.resolve(response.data)
     }, error => {
-        if(error.response){
+        if(error.response.data !== undefined){
             return Promise.reject(error.response.data)
         } else {
             error.message = '网络错误!'

@@ -12,7 +12,8 @@
                         <i class="fas fa-sun" v-else/>
                     </transition>
                 </div>
-                <button type="button" class="login-button" @click="openLoginBox" v-wave="{color: 'rgba(255, 255, 255, 0.7)'}">登录</button>
+                <button type="button" class="login-button" @click="openLoginBox" v-wave="{color: 'rgba(255, 255, 255, 0.7)'}" v-if="this.$store.getters.userInfo === null">登录</button>
+                <img v-else :src="this.$store.getters.userInfo.avatar" :alt="this.$store.getters.userInfo.nickName">
             </div>
         </nav>
         <nav class="top-nav-mobile" v-else>
@@ -53,12 +54,12 @@
                     <div class="input-list">
                         <label class="input-item">
                             <div class="input-top-div">
-                                <span>用户名</span>
+                                <span>邮箱</span>
                                 <span>*</span>
                             </div>
-                            <input type="text" @change="checkUserNameMatch" placeholder="请输入用户名"/>
+                            <input type="text" @change="matchEmail" placeholder="请输入邮箱" v-model="this.inputLoginEmail"/>
                             <div class="input-tips-div">
-                                <span>{{userNameFailMessage}}</span>
+                                <span>{{emailFailMessage}}</span>
                             </div>
                         </label>
                         <form class="input-password">
@@ -67,15 +68,18 @@
                                 <span>*</span>
                             </div>
                             <div class="input-password-lable">
-                                <input :type="this.isShowPassword ? 'text':'password'" maxlength="16" placeholder="请输入密码" autocomplete="off"/>
+                                <input @change="matchPassword" :type="this.isShowPassword ? 'text':'password'" maxlength="16" placeholder="请输入密码" autocomplete="off" v-model="this.inputLoginPassword"/>
                                 <i class="far input-show-password" :class="this.isShowPassword ? 'fa-eye-slash':'fa-eye'" @click="this.isShowPassword =! this.isShowPassword" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
                             </div>
                             <div class="input-tips-div">
-                                <span></span>
+                                <span>{{this.passwordFailMessage}}</span>
                             </div>
                         </form>
                     </div>
-                    <button type="button" class="confirm-button" :class="this.$store.getters.isPhone ? 'confirm-button-mobile':'confirm-button-pc'" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">登录</button>
+                    <button type="button" title="登录" class="confirm-button" :class="this.$store.getters.isPhone ? 'confirm-button-mobile':'confirm-button-pc'" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}" @click="loginSystem">
+                        {{this.isLoginWork ? '':'登录'}}
+                        <i v-if="this.isLoginWork" class="fas fa-circle-notch fa-spin"/>
+                    </button>
                     <span class="other-login-tips">其他登录方式</span>
                     <div class="other-login-list">
                         <i class="fab fa-qq" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
@@ -122,9 +126,9 @@
                                 <span>邮箱</span>
                                 <span>*</span>
                             </div>
-                            <input type="text" placeholder="请输入邮箱"/>
+                            <input type="text" @change="matchEmail" placeholder="请输入邮箱" v-model="this.inputRegisterEmail"/>
                             <div class="input-tips-div">
-                                <span></span>
+                                <span>{{this.emailFailMessage}}</span>
                             </div>
                         </label>
                         <form class="input-password">
@@ -133,11 +137,11 @@
                                 <span>*</span>
                             </div>
                             <div class="input-password-lable">
-                                <input :type="this.isShowPassword ? 'text':'password'" maxlength="16" placeholder="请输入密码" autocomplete="off"/>
+                                <input v-model="this.inputRegisterPassword" @change="matchPassword" :type="this.isShowPassword ? 'text':'password'" maxlength="16" placeholder="请输入密码" autocomplete="off"/>
                                 <i class="far input-show-password" :class="this.isShowPassword ? 'fa-eye-slash':'fa-eye'" @click="this.isShowPassword =! this.isShowPassword" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"/>
                             </div>
                             <div class="input-tips-div">
-                                <span></span>
+                                <span>{{this.passwordFailMessage}}</span>
                             </div>
                         </form>
                         <label class="input-item">
@@ -145,13 +149,16 @@
                                 <span>昵称</span>
                                 <span>*</span>
                             </div>
-                            <input type="text" placeholder="请输入昵称"/>
+                            <input type="text" v-model="this.inputRegisterNickName" @change="matchNickName" placeholder="请输入昵称"/>
                             <div class="input-tips-div">
-                                <span></span>
+                                <span>{{this.nickNameFailMessage}}</span>
                             </div>
                         </label>
                     </div>
-                    <button type="button" class="confirm-button" :class="this.$store.getters.isPhone ? 'confirm-button-mobile':'confirm-button-pc'" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">注册</button>
+                    <button type="button" title="注册" @click="registerSystem" class="confirm-button" :class="this.$store.getters.isPhone ? 'confirm-button-mobile':'confirm-button-pc'" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
+                        {{this.isRegisterWork ? '':'注册'}}
+                        <i v-if="this.isRegisterWork" class="fas fa-circle-notch fa-spin"/>
+                    </button>
                 </div>
             </div>
         </transition>
@@ -168,6 +175,8 @@ import '@/assets/fontawesome/css/all.min.css'
 import { start, close } from '@/util/nprogress'
 import '@/assets/custom/darkAndLight.scss'
 import $ from 'jquery'
+import { blogRegisterUser , blogLoginUser, blogLoginUserByToken } from '@/util/api.js'
+import { ElMessage , ElMessageBox } from 'element-plus'
 export default {
     data(){
         return{
@@ -208,11 +217,34 @@ export default {
             isOpenLogin: false,
             isOpenRegister: false,
             isShowPassword: false,
-            userNameFailMessage: ''
+
+            //匹配规则
+            emailMatchRule: /^(\w+([-.][A-Za-z0-9]+)*){3,18}@\w+([-.][A-Za-z0-9]+)*\.\w+([-.][A-Za-z0-9]+)*$/,
+            passwordMatchRule: /^(?![A-Za-z0-9]+$)(?![a-z0-9#?!@$%^&*-.]+$)(?![A-Za-z#?!@$%^&*-.]+$)(?![A-Z0-9#?!@$%^&*-.]+$)[a-zA-Z0-9#?!@$%^&*-.]{8,16}$/,
+            nickNameMatchRule: /^[\u4E00-\u9FA5A-Za-z0-9_]{2,6}/,
+
+            //显示错误信息
+            emailFailMessage: '',
+            passwordFailMessage: '',
+            nickNameFailMessage: '',
+            
+            //输入的字段
+            inputLoginEmail: '',
+            inputLoginPassword: '',
+            inputRegisterEmail: '',
+            inputRegisterPassword: '',
+            inputRegisterNickName: '',
+
+            //加载状态
+            isLoginWork: false,
+            isRegisterWork: false,
         }
     },
     created(){
         start()
+        if(localStorage.getItem('token')){
+            this.loginSystemByToken()
+        }
         this.setUserProfile()
         this.windowWidth()
         window.addEventListener('resize', this.windowWidth)
@@ -264,7 +296,7 @@ export default {
             setTimeout(() => {
                 this.isOpenLogin = true
             }, 200)
-            this.userNameFailMessage = ''
+            this.emailFailMessage = ''
             this.isShowPassword = false
         },
         closeAppMask(){
@@ -272,6 +304,12 @@ export default {
                 setTimeout(() => {
                     this.isOpenLogin = false
                     this.isOpenRegister = false
+
+                    this.inputLoginEmail = ''
+                    this.inputLoginPassword = ''
+                    this.inputRegisterEmail = ''
+                    this.inputRegisterPassword = ''
+                    this.inputRegisterNickName = ''
                 }, 400)
             }
         },
@@ -285,23 +323,6 @@ export default {
                 this.isOpenRegister = true
             }, 200)
         },
-        checkUserNameMatch(e){
-            let value = e.target.value
-            if(value === ''){
-                this.userNameFailMessage = '用户名不能为空'
-                return
-            }
-            //判断长度
-            const matchLineRule = /^.{4,16}$/
-            const matchZHCN = /^[\\u4E00-\\u9FA5A-Za-z0-9]+$/
-            if(matchLineRule.test(value)){
-                this.userNameFailMessage = '长度不匹配'
-            } if(!matchZHCN.test(value)) {
-                this.userNameFailMessage = '用户名不能使用中文'
-            } else {
-                this.userNameFailMessage = ''
-            }
-        },
         closeUserInfoBox(e){
             if(e.target.className === 'app-mask' && this.isOpenDrawer){
                 this.isOpenDrawer = false
@@ -313,6 +334,155 @@ export default {
         scrollValue(e){
             this.$store.commit('windowScrollValueSet', $(e.target).scrollTop())
         },
+
+        matchEmail(e){
+            let value = e.target.value
+            if(value === ''){
+                this.emailFailMessage = '邮箱不能为空'
+                return
+            }
+            if(!this.emailMatchRule.test(value)) {
+                this.emailFailMessage = '邮箱格式不正确'
+            } else {
+                this.emailFailMessage = ''
+            }
+        },
+        matchPassword(e){
+            let value = e.target.value
+            if(value === ''){
+                this.passwordFailMessage = '密码不能位空'
+                return
+            }
+            if (!this.passwordMatchRule.test(value)){
+                this.passwordFailMessage = '密码格式不正确'
+            } else {
+                this.passwordFailMessage = ''
+            }
+        },
+        matchNickName(e){
+            let value = e.target.value
+            if(value === ''){
+                this.nickNameFailMessage = '密码不能位空'
+                return
+            }
+            if (!this.nickNameMatchRule.test(value)){
+                this.nickNameFailMessage = '密码格式不正确'
+            } else {
+                this.nickNameFailMessage = ''
+            }
+        },
+
+        //交互
+        loginSystem(){
+            if(!this.isLoginWork){
+                this.isLoginWork = true
+                if(this.inputLoginEmail === '') {
+                    this.emailFailMessage = '密码不能位空'
+                    this.isLoginWork = false
+                    return
+                }
+                if(!this.emailMatchRule.test(this.inputLoginEmail)){
+                    this.emailFailMessage = '邮箱格式不正确'
+                    this.isLoginWork = false
+                    return
+                }
+                if(this.inputLoginPassword === ''){
+                    this.passwordFailMessage = '密码不能位空'
+                    this.isLoginWork = false
+                    return
+                }
+                if(!this.passwordMatchRule.test(this.inputLoginPassword)){
+                    this.passwordFailMessage = '密码格式不正确'
+                    this.isLoginWork = false
+                    return
+                }
+                let data = new FormData()
+                data.append('email', this.inputLoginEmail)
+                data.append('password', this.inputLoginPassword)
+                blogLoginUser(data).then(resq => {
+                    if(resq.code === 200){
+                        localStorage.setItem('token', resq.data.token)
+                        ElMessageBox.alert(resq.message, '提示', { confirmButtonText: '确定', callback: () => {
+                            this.$store.commit('userInfoSet', resq.data.user)
+                            this.closeAppMask()
+                        }})
+                    } else {
+                        ElMessage({type: 'error', message: resq.message})
+                    }
+                    this.isLoginWork = false
+                }).catch(err => {
+                    ElMessage({type: 'error', message: err.message})
+                    this.isLoginWork = false
+                })
+            }
+            
+        },
+        registerSystem(){
+            if(!this.isRegisterWork){
+                this.isRegisterWork = true
+                if(this.inputRegisterEmail === ''){
+                    this.emailFailMessage = '邮箱不能为空'
+                    this.isRegisterWork = false
+                    return
+                }
+                if(!this.emailMatchRule.test(this.inputRegisterEmail)){
+                    this.emailFailMessage = '邮箱格式不正确'
+                    this.isRegisterWork = false
+                    return
+                }
+                if(this.inputRegisterPassword === ''){
+                    this.passwordFailMessage = '密码不能为空'
+                    this.isRegisterWork = false
+                    return
+                }
+                if(!this.passwordMatchRule.test(this.inputRegisterPassword)){
+                    this.passwordFailMessage = '密码格式不正确'
+                    this.isRegisterWork = false
+                    return
+                }
+                if(this.inputRegisterNickName === ''){
+                    this.nickNameFailMessage = '昵称不能为空'
+                    this.isRegisterWork = false
+                    return
+                }
+                if(!this.nickNameMatchRule.test(this.inputRegisterNickName)){
+                    this.nickNameFailMessage = '昵称格式不正确'
+                    this.isRegisterWork = false
+                    return
+                }
+                let data = new FormData()
+                data.append('email', this.inputRegisterEmail)
+                data.append('password', this.inputRegisterPassword)
+                data.append('nickName', this.inputRegisterNickName)
+                blogRegisterUser(data).then(resq => {
+                    if(resq.code === 200){
+                        ElMessageBox.alert(resq.message, '提示', { confirmButtonText: '确定', callback: () => {
+                            this.isOpenRegister = false
+                            setTimeout(() => {
+                                this.isOpenLogin = true
+                            },400)
+                        }})
+                    } else {
+                        console.log(resq)
+                        ElMessage({type: 'error', message: resq.message})
+                    }
+                    this.isRegisterWork = false
+                }).catch(err => {
+                    ElMessage({type: 'error', message: err.message})
+                    this.isRegisterWork = false
+                })
+            }
+        },
+        loginSystemByToken(){
+            blogLoginUserByToken().then(resq => {
+                if(resq.code === 200){
+                    this.$store.commit('userInfoSet', resq.data)
+                } else {
+                    ElMessage({type: 'error', message: resq.message})
+                }
+            }).catch(err => {
+            })
+        }
     },
     watch:{
         $route:{
@@ -461,6 +631,15 @@ ul , li
                     border-radius: 50%;
                     cursor: pointer;
                     margin-right: 2rem;
+                }
+                img
+                {
+                    width: 1.8rem;
+                    height: 1.8rem;
+                    border-radius: 50%;
+                    border: solid 2px #3c4248;
+                    font-size: 0.6rem;
+                    cursor: pointer;
                 }
             }
         }
@@ -824,6 +1003,10 @@ ul , li
                 font-size: 0.8rem;
                 letter-spacing: 0.1rem;
                 transition: all 0.3s;
+                i
+                {
+                    font-size: 1.2rem;
+                }
             }
             .confirm-button-pc
             {
