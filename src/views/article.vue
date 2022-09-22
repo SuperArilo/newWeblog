@@ -3,22 +3,22 @@
         <main class="article-container">
             <nav class="top-info">
                 <img src="../assets/image/test2.png" class="article-img" title="test"/>
-                <p class="article-title">标题标题标题</p>
+                <p class="article-title">{{this.articleContent.articleTitle}}</p>
                 <div class="article-user-info">
                     <div class="left-user-info">
-                        <img src="../assets/image/userHead.jpg" title="head"/>
+                        <img :src="this.articleContent.avatar" :title="this.articleContent.nickName"/>
                         <div class="name-div">
-                            <span>老王</span>
-                            <span>六月 16, 2022</span>
+                            <span>{{this.articleContent.nickName}}</span>
+                            <span>{{this.articleContent.createTime}}</span>
                         </div>
                     </div>
                     <div class="right-watch-sum">
                         <i class="far fa-eye"/>
-                        <span>1120</span>
+                        <span>{{this.articleContent.articleViews}}</span>
                     </div>
                 </div>
             </nav>
-            <div class="article-show-content editer-render" v-html="'<p>text</p>'">
+            <div class="article-show-content editer-render" v-html="this.articleContent.articleContent">
 
             </div>
             <footer class="article-vistor">
@@ -65,12 +65,15 @@
 <script>
 import comment from '@/components/comment.vue'
 import editor from '@/components/editor.vue'
+import { articleContentGet } from '@/util/article.js'
+import { ElMessage , ElMessageBox } from 'element-plus'
 export default {
     components:{
         comment, editor
     },
     data(){
         return{
+            articleContent: '',
             commentList: [
                 {
                     id: 0,
@@ -92,7 +95,15 @@ export default {
         }
     },
     mounted(){
-        
+        articleContentGet({'articleId': this.$route.query.id}).then(resq => {
+            if(resq.code == 200){
+                this.articleContent = resq.data
+            } else {
+                ElMessage({type: 'error', message: resq.message})
+            }
+        }).catch(err => {
+            ElMessage({type: 'error', message: err.message})
+        })
     }
 }
 </script>

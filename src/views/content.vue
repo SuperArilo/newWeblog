@@ -34,26 +34,26 @@
                 </header>
                 <ul class="index-article-list">
                     <li v-for="item in articleList" :key="item.id">
-                        <img :src="item.image" :title="item.title"/>
+                        <img :src="item.image" :title="item.articleTitle"/>
                         <div class="article-item-content">
-                            <p>{{item.title}}</p>
-                            <span class="time-span">{{item.time}}</span>
-                            <span class="introduction-content">{{item.content}}</span>
+                            <p>{{item.articleTitle}}</p>
+                            <span class="time-span">{{item.createTime}}</span>
+                            <span class="introduction-content">{{item.articleIntroduction}}</span>
                         </div>
                         <div class="bottom-function">
                             <button type="button" v-wave="{color: 'rgb(228, 177, 177)'}" @click="this.$router.push({path: '/article', query: {id: item.id}})">开始阅读</button>
                             <div class="right-state">
                                 <div v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
                                     <i class="fas fa-eye"/>
-                                    <span>908</span>
+                                    <span>{{item.articleViews}}</span>
                                 </div>
                                 <div v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
                                     <i class="fas fa-heart"/>
-                                    <span>10</span>
+                                    <span>{{item.articleLikes}}</span>
                                 </div>
                                 <div v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
                                     <i class="fas fa-comment-alt"/>
-                                    <span>10</span>
+                                    <span>{{item.commentTotal}}</span>
                                 </div>
                             </div>
                         </div>
@@ -83,6 +83,8 @@
 </template>
 <script>
 import gossip from '@/components/gossip.vue'
+import { articleListGet } from '@/util/article.js'
+import { ElMessage , ElMessageBox } from 'element-plus'
 export default {
     components: { 
         gossip
@@ -108,36 +110,7 @@ export default {
                 }
             ],
             carouselIndex: 0,
-            articleList:[
-                {
-                    id: 0,
-                    image: require('@/assets/image/test.png'),
-                    title: '2021年6月24日，数据分析当前是否还适合投资FIL云算力',
-                    time: '六月 24, 2021',
-                    content: '随着币价的下跌，最近不少人蠢蠢欲动，开始考虑是否要布局一下FIL云算力。为了让一部分不明所以、跑步入场的小白，对自己投资的项目有个较为客观的认知，接下来我会在数据面上分析下这项投资的实际可'
-                },
-                {
-                    id: 0,
-                    image: require('@/assets/image/test.png'),
-                    title: '2021年6月24日，数据分析当前是否还适合投资FIL云算力',
-                    time: '六月 24, 2021',
-                    content: '随着币价的下跌，最近不少人蠢蠢欲动，开始考虑是否要布局一下FIL云算力。为了让一部分不明所以、跑步入场的小白，对自己投资的项目有个较为客观的认知，接下来我会在数据面上分析下这项投资的实际可'
-                },
-                {
-                    id: 0,
-                    image: require('@/assets/image/test.png'),
-                    title: '2021年6月24日，数据分析当前是否还适合投资FIL云算力',
-                    time: '六月 24, 2021',
-                    content: '随着币价的下跌，最近不少人蠢蠢欲动，开始考虑是否要布局一下FIL云算力。为了让一部分不明所以、跑步入场的小白，对自己投资的项目有个较为客观的认知，接下来我会在数据面上分析下这项投资的实际可'
-                },
-                {
-                    id: 0,
-                    image: require('@/assets/image/test.png'),
-                    title: '2021年6月24日，数据分析当前是否还适合投资FIL云算力',
-                    time: '六月 24, 2021',
-                    content: '随着币价的下跌，最近不少人蠢蠢欲动，开始考虑是否要布局一下FIL云算力。为了让一部分不明所以、跑步入场的小白，对自己投资的项目有个较为客观的认知，接下来我会在数据面上分析下这项投资的实际可'
-                }
-            ],
+            articleList: [],
             gossipList:[
                 {
                     id: 0,
@@ -215,6 +188,7 @@ export default {
         }
     },
     mounted(){
+        this.articleListServer()
     },
     methods:{
         getCarouselIndex(index){
@@ -222,6 +196,17 @@ export default {
         },
         choiceCarouseIndex(index){
             this.$refs.carouselContent.setActiveItem(index)
+        },
+        articleListServer(){
+            articleListGet().then(resq => {
+                if(resq.code === 200){
+                    this.articleList = resq.data.list
+                } else {
+                    ElMessage({type: 'error', message: resq.message})
+                }
+            }).catch(err => {
+                ElMessage({type: 'error', message: err.message})
+            })
         }
     }
 }

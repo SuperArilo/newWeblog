@@ -54,12 +54,12 @@
                     <div class="input-list">
                         <label class="input-item">
                             <div class="input-top-div">
-                                <span>邮箱</span>
+                                <span>邮箱 / UID</span>
                                 <span>*</span>
                             </div>
-                            <input type="text" @change="matchEmail" placeholder="请输入邮箱" v-model="this.inputLoginEmail"/>
+                            <input type="text" @change="matchEmail" placeholder="请输入邮箱或者UID" v-model="this.inputLoginInstance"/>
                             <div class="input-tips-div">
-                                <span>{{emailFailMessage}}</span>
+                                <span></span>
                             </div>
                         </label>
                         <form class="input-password">
@@ -175,7 +175,7 @@ import '@/assets/fontawesome/css/all.min.css'
 import { start, close } from '@/util/nprogress'
 import '@/assets/custom/darkAndLight.scss'
 import $ from 'jquery'
-import { blogRegisterUser , blogLoginUser, blogLoginUserByToken } from '@/util/api.js'
+import { blogRegisterUser , blogLoginUser } from '@/util/user.js'
 import { ElMessage , ElMessageBox } from 'element-plus'
 export default {
     data(){
@@ -229,7 +229,7 @@ export default {
             nickNameFailMessage: '',
             
             //输入的字段
-            inputLoginEmail: '',
+            inputLoginInstance: '',
             inputLoginPassword: '',
             inputRegisterEmail: '',
             inputRegisterPassword: '',
@@ -287,7 +287,9 @@ export default {
         },
         async setUserProfile(){
             let json = JSON.parse(localStorage.getItem('userProfile'))
-            this.$store.commit('darkModelSet', json.darkModel)
+            if(json.darkModel){
+                this.$store.commit('darkModelSet', json.darkModel)
+            }
         },
         openLoginBox(){
             if(this.isOpenLogin) return
@@ -305,7 +307,7 @@ export default {
                     this.isOpenLogin = false
                     this.isOpenRegister = false
 
-                    this.inputLoginEmail = ''
+                    this.inputLoginInstance = ''
                     this.inputLoginPassword = ''
                     this.inputRegisterEmail = ''
                     this.inputRegisterPassword = ''
@@ -334,7 +336,6 @@ export default {
         scrollValue(e){
             this.$store.commit('windowScrollValueSet', $(e.target).scrollTop())
         },
-
         matchEmail(e){
             let value = e.target.value
             if(value === ''){
@@ -371,21 +372,10 @@ export default {
                 this.nickNameFailMessage = ''
             }
         },
-
         //交互
         loginSystem(){
             if(!this.isLoginWork){
                 this.isLoginWork = true
-                if(this.inputLoginEmail === '') {
-                    this.emailFailMessage = '密码不能位空'
-                    this.isLoginWork = false
-                    return
-                }
-                if(!this.emailMatchRule.test(this.inputLoginEmail)){
-                    this.emailFailMessage = '邮箱格式不正确'
-                    this.isLoginWork = false
-                    return
-                }
                 if(this.inputLoginPassword === ''){
                     this.passwordFailMessage = '密码不能位空'
                     this.isLoginWork = false
@@ -397,7 +387,11 @@ export default {
                     return
                 }
                 let data = new FormData()
-                data.append('email', this.inputLoginEmail)
+                if(this.emailMatchRule.test(this.inputLoginInstance)){
+                    data.append('email', this.inputLoginInstance)
+                } else {
+                    data.append('uid', this.inputLoginInstance)
+                }
                 data.append('password', this.inputLoginPassword)
                 blogLoginUser(data).then(resq => {
                     if(resq.code === 200){
@@ -415,7 +409,17 @@ export default {
                     this.isLoginWork = false
                 })
             }
-            
+        },
+        loginSystemByToken(){
+            blogLoginUser().then(resq => {
+                if(resq.code === 200){
+                    this.$store.commit('userInfoSet', resq.data.user)
+                } else {
+                    ElMessage({type: 'error', message: resq.message})
+                }
+            }).catch(err => {
+                ElMessage({type: 'error', message: err.message})
+            })
         },
         registerSystem(){
             if(!this.isRegisterWork){
@@ -473,16 +477,6 @@ export default {
                 })
             }
         },
-        loginSystemByToken(){
-            blogLoginUserByToken().then(resq => {
-                if(resq.code === 200){
-                    this.$store.commit('userInfoSet', resq.data)
-                } else {
-                    ElMessage({type: 'error', message: resq.message})
-                }
-            }).catch(err => {
-            })
-        }
     },
     watch:{
         $route:{
