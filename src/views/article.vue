@@ -2,7 +2,7 @@
     <div class="article-content">
         <main class="article-container">
             <nav class="top-info">
-                <img src="../assets/image/test2.png" class="article-img" title="test"/>
+                <img :src="require('@/assets/image/test2.png')" class="article-img" title="test"/>
                 <p class="article-title">{{this.articleContent.articleTitle}}</p>
                 <div class="article-user-info">
                     <div class="left-user-info">
