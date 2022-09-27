@@ -34,7 +34,7 @@
                 </header>
                 <ul class="index-article-list">
                     <li v-for="item in articleList" :key="item.id">
-                        <img :src="item.image" :title="item.articleTitle"/>
+                        <img :src="item.articlePicture" :title="item.articleTitle"/>
                         <div class="article-item-content">
                             <p>{{item.articleTitle}}</p>
                             <span class="time-span">{{item.createTime}}</span>

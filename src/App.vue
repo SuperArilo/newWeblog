@@ -287,7 +287,7 @@ export default {
         },
         async setUserProfile(){
             let json = JSON.parse(localStorage.getItem('userProfile'))
-            if(json.darkModel){
+            if(Object.keys(json).includes('darkModel')){
                 this.$store.commit('darkModelSet', json.darkModel)
             }
         },
