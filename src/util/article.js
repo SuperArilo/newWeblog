@@ -23,3 +23,11 @@ export const articleContentGet = (params) => {
         }
     })
 }
+//文章喜欢
+export const increaseArticleLike = (query) => {
+    return request({
+        url: '/article/like',
+        method: 'put',
+        data: query,
+    })
+}

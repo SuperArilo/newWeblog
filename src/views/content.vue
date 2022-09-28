@@ -47,7 +47,7 @@
                                     <i class="fas fa-eye"/>
                                     <span>{{item.articleViews}}</span>
                                 </div>
-                                <div v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
+                                <div v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}" @click="addArticleLike(item.id)">
                                     <i class="fas fa-heart"/>
                                     <span>{{item.articleLikes}}</span>
                                 </div>
@@ -83,7 +83,7 @@
 </template>
 <script>
 import gossip from '@/components/gossip.vue'
-import { articleListGet } from '@/util/article.js'
+import { articleListGet , increaseArticleLike } from '@/util/article.js'
 import { ElMessage , ElMessageBox } from 'element-plus'
 export default {
     components: { 
@@ -91,6 +91,9 @@ export default {
     },
     data(){
         return{
+
+            increaseLikeStatus: false,
+
             isAutoPlay: true,
             carouselData:[
                 {
@@ -184,7 +187,9 @@ export default {
                     userHead: require('@/assets/image/userHead.jpg'),
                     time: '4个月前'
                 }
-            ]
+            ],
+
+            likedArticle: []
         }
     },
     mounted(){
@@ -207,6 +212,25 @@ export default {
             }).catch(err => {
                 ElMessage({type: 'error', message: err.message})
             })
+        },
+        addArticleLike(articleId){
+            if(!this.increaseLikeStatus){
+                this.increaseLikeStatus = true
+                let data = new FormData()
+                data.append('articleId', articleId)
+                increaseArticleLike(data).then(resq => {
+                    if(resq.code === 200){
+                        ElMessage({type: 'success', message: resq.message})
+                        this.articleList[this.articleList.findIndex(item => item.id === articleId)].articleLikes++
+                    } else {
+                        ElMessage({tyep: 'error', message: resq.message})
+                    }
+                    this.increaseLikeStatus = false
+                }).catch(err => {
+                    ElMessage({type: 'error', message: err.message})
+                    this.increaseLikeStatus = false
+                })
+            }
         }
     }
 }
