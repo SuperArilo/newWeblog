@@ -2,7 +2,7 @@
     <div class="article-content">
         <main class="article-container">
             <nav class="top-info">
-                <img :src="require('@/assets/image/test2.png')" class="article-img" title="test"/>
+                <img :src="this.articleContent.articlePicture" class="article-img" title="test"/>
                 <p class="article-title">{{this.articleContent.articleTitle}}</p>
                 <div class="article-user-info">
                     <div class="left-user-info">
@@ -12,9 +12,15 @@
                             <span>{{this.articleContent.createTime}}</span>
                         </div>
                     </div>
-                    <div class="right-watch-sum">
-                        <i class="far fa-eye"/>
-                        <span>{{this.articleContent.articleViews}}</span>
+                    <div class="right-article-info">
+                        <div>
+                            <i class="far fa-eye"/>
+                            <span>{{this.articleContent.articleViews}}</span>
+                        </div>
+                        <div v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}"  @click="addArticleLike(this.articleContent.id)">
+                            <i class="fas fa-heart" :style="this.articleContent.hasLike ? 'color: red;':''"/>
+                            <span>{{this.articleContent.articleLikes}}</span>
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -65,7 +71,7 @@
 <script>
 import comment from '@/components/comment.vue'
 import editor from '@/components/editor.vue'
-import { articleContentGet } from '@/util/article.js'
+import { articleContentGet , increaseArticleLike } from '@/util/article.js'
 import { ElMessage , ElMessageBox } from 'element-plus'
 export default {
     components:{
@@ -73,6 +79,9 @@ export default {
     },
     data(){
         return{
+
+            increaseLikeStatus: false,
+
             articleContent: '',
             commentList: [
                 {
@@ -104,6 +113,33 @@ export default {
         }).catch(err => {
             ElMessage({type: 'error', message: err.message})
         })
+    },
+    methods:{
+        addArticleLike(articleId){
+            if(!this.increaseLikeStatus){
+                this.increaseLikeStatus = true
+                let data = new FormData()
+                data.append('articleId', articleId)
+                increaseArticleLike(data).then(resq => {
+                    if(resq.code === 200){
+                        if(!resq.data.status){
+                            this.articleContent.articleLikes--
+                            
+                        } else {
+                            this.articleContent.articleLikes++
+                        }
+                        this.articleContent.hasLike = resq.data.status
+                        ElMessage({type: 'success', message: resq.message})
+                    } else {
+                        ElMessage({tyep: 'error', message: resq.message})
+                    }
+                    this.increaseLikeStatus = false
+                }).catch(err => {
+                    ElMessage({type: 'error', message: err.message})
+                    this.increaseLikeStatus = false
+                })
+            }
+        }
     }
 }
 </script>
@@ -128,6 +164,7 @@ export default {
             {
                 width: 100%;
                 max-height: 18rem;
+                min-height: 18rem;
                 object-fit: cover;
             }
             .article-title
@@ -185,20 +222,34 @@ export default {
                         }
                     }
                 }
-                .right-watch-sum
+                .right-article-info
                 {
                     height: inherit;
                     display: flex;
-                    align-items: center;
-                    span , i
+                    flex-direction: column;
+                    
+                    div
                     {
-                        transition: color 0.3s;
+                        padding: 0.2rem;
+                        border-radius: 0.1rem;
+                        i
+                        {
+                            width: 0.8rem;
+                        }
+                        span , i
+                        {
+                            transition: color 0.3s;
+                            font-size: 0.72rem;
+                            color: rgb(115, 115, 115);
+                        }
+                        span
+                        {
+                            margin-left: 0.5rem;
+                        }
                     }
-                    span
+                    div:last-child
                     {
-                        color: rgba(0, 0, 0, 0.87);
-                        font-size: 0.7rem;
-                        margin-left: 0.5rem;
+                        cursor: pointer;
                     }
                 }
             }

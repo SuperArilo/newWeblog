@@ -33,7 +33,7 @@
                     <span class="left-title-span">全部文章</span>
                 </header>
                 <ul class="index-article-list">
-                    <li v-for="item in articleList" :key="item.id">
+                    <li v-for="(item, index) in articleList" :key="item.id">
                         <img :src="item.articlePicture" :title="item.articleTitle"/>
                         <div class="article-item-content">
                             <p>{{item.articleTitle}}</p>
@@ -41,14 +41,14 @@
                             <span class="introduction-content">{{item.articleIntroduction}}</span>
                         </div>
                         <div class="bottom-function">
-                            <button type="button" v-wave="{color: 'rgb(228, 177, 177)'}" @click="this.$router.push({path: '/article', query: {id: item.id}})">开始阅读</button>
+                            <button type="button" v-wave="{color: 'rgb(228, 177, 177)'}" @click="this.$router.push({ path: '/article', query: { id: item.id } })">开始阅读</button>
                             <div class="right-state">
                                 <div v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
                                     <i class="fas fa-eye"/>
                                     <span>{{item.articleViews}}</span>
                                 </div>
-                                <div v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}" @click="addArticleLike(item.id)">
-                                    <i class="fas fa-heart"/>
+                                <div v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}" @click="addArticleLike(item.id, index)">
+                                    <i class="fas fa-heart" :style="item.isLike ? 'color: red;':''"/>
                                     <span>{{item.articleLikes}}</span>
                                 </div>
                                 <div v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
@@ -213,15 +213,21 @@ export default {
                 ElMessage({type: 'error', message: err.message})
             })
         },
-        addArticleLike(articleId){
+        addArticleLike(articleId, index){
             if(!this.increaseLikeStatus){
                 this.increaseLikeStatus = true
                 let data = new FormData()
                 data.append('articleId', articleId)
                 increaseArticleLike(data).then(resq => {
                     if(resq.code === 200){
+                        if(!resq.data.status){
+                            this.articleList[index].articleLikes--
+                            
+                        } else {
+                            this.articleList[index].articleLikes++
+                        }
+                        this.articleList[index].isLike = resq.data.status
                         ElMessage({type: 'success', message: resq.message})
-                        this.articleList[this.articleList.findIndex(item => item.id === articleId)].articleLikes++
                     } else {
                         ElMessage({tyep: 'error', message: resq.message})
                     }
@@ -231,6 +237,14 @@ export default {
                     this.increaseLikeStatus = false
                 })
             }
+        }
+    },
+    watch:{
+        '$store.getters.userInfo': {
+            handler(n, o){
+                this.articleListServer()
+            },
+            deep: false
         }
     }
 }

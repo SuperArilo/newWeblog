@@ -245,7 +245,6 @@ export default {
         if(localStorage.getItem('token')){
             this.loginSystemByToken()
         }
-        this.setUserProfile()
         this.windowWidth()
         window.addEventListener('resize', this.windowWidth)
         window.addEventListener('scroll', this.scrollValue, true)
@@ -284,12 +283,6 @@ export default {
                 darkModel: this.$store.getters.darkModel
             }
             localStorage.setItem('userProfile', JSON.stringify(json))
-        },
-        async setUserProfile(){
-            let json = JSON.parse(localStorage.getItem('userProfile'))
-            if(Object.keys(json).includes('darkModel')){
-                this.$store.commit('darkModelSet', json.darkModel)
-            }
         },
         openLoginBox(){
             if(this.isOpenLogin) return
