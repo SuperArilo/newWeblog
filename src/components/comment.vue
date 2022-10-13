@@ -1,29 +1,68 @@
 <template>
-    <div class="comment-box">
+    <div class="comment-box" v-if="this.renderData">
         <div class="comment-top">
             <div class="comment-top-left">
-                <img :src="this.renderData.commentHead" title="head"/>
+                <img :src="this.renderData.replyUser.replyAvatar" :title="this.renderData.replyUser.replyNickName"/>
                 <div class="vistor-info">
                     <div>
-                        <span>{{this.renderData.commentName}}</span>
-                        <button type="button">回复</button>
+                        <span>{{this.renderData.replyUser.replyNickName}}</span>
+                        <button type="button" @click="clickReply(this.renderData)">回复</button>
                     </div>
-                    <span class="vistor-info-time">{{this.renderData.commentTime}}</span>
+                    <span class="vistor-info-time">{{this.renderData.createTime}}</span>
                 </div>
             </div>
             <div class="comment-top-right">
-                <i class="fas fa-heart"/>
-                <span>{{this.renderData.commentLike}}</span>
+                <i class="fas fa-heart" :style="this.renderData.isLike ? 'color: red;':''" @click="clikcLikeComment(this.renderData.articleId, this.renderData.commentId)"/>
+                <span>{{this.renderData.likes}}</span>
             </div>
         </div>
-        <div class="comment-content-render editer-render" v-html="this.renderData.commentContent"></div>
+        <div class="comment-content-render editer-render" v-html="this.reRenderContent" />
     </div>
 </template>
 <script>
+import { likeComment } from "@/util/article.js"
+import { ElMessage , ElMessageBox } from 'element-plus'
 export default {
     props:{
         renderData: {
             type: Object
+        }
+    },
+    data(){
+        return{
+            reRenderContent: ''
+        }
+    },
+    created(){
+        if(this.renderData.byReplyUser){
+            this.reRenderContent = '<blockquote>@' + this.renderData.byReplyUser.byReplyName + '</blockquote>' + this.renderData.content
+        } else {
+            this.reRenderContent = this.renderData.content
+        }
+    },
+    methods:{
+        clickReply(object){
+            this.$emit('getReplyUser', object)
+        },
+        clikcLikeComment(articleId, commentId){
+            let data = new FormData()
+            data.append('articleId', articleId)
+            data.append('commentId', commentId)
+            likeComment(data).then(resq => {
+                if(resq.code === 200 ){
+                    ElMessage({type: 'success', message: resq.message})
+                    if(resq.data.status){
+                        this.renderData.likes++
+                    } else {
+                        this.renderData.likes--
+                    }
+                    this.renderData.isLike = resq.data.status
+                } else {
+                    ElMessage({type: 'error', message: resq.message})
+                }
+            }).catch(err => {
+                ElMessage({type: 'error', message: err.message})
+            })
         }
     }
 }
@@ -32,7 +71,6 @@ export default {
 .comment-box
 {
     width: 100%;
-    // padding: 0.25rem 0;
     display: flex;
     flex-direction: column;
     transition: border 0.3s;
@@ -125,7 +163,10 @@ export default {
     .comment-content-render
     {
         width: 100%;
+        padding: 0.5rem 1rem;
         min-height: 3rem;
+        border-radius: 0.2rem;
+        transition: background-color 0.3s;
     }
 }
 </style>

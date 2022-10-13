@@ -29,49 +29,43 @@
             </div>
             <footer class="article-vistor">
                 <span class="article-vistor-title">评论</span>
-                <div class="vistor-editor-box">
-                    <editor :toolbarConfig="{
-                        excludeKeys: [
-                            'blockquote',
-                            'header1',
-                            'header2',
-                            'header3',
-                            'bulletedList',
-                            'codeBlock',
-                            'insertImage',
-                            'insertLink',
-                            'insertTable',
-                            'insertVideo',
-                            'justifyCenter',
-                            'justifyLeft',
-                            'justifyRight',
-                            'numberedList', 
-                            'redo',
-                            'todo',
-                            'undo',
-                            'uploadImage',
-                            'group-image',
-                            'fullScreen',
-                            '|',
-                            'clearStyle',
-                            'bold',
-                            'underline',
-                            'italic',
-                            'through'
-                        ]
-                    }"/>
+                <div class="vistor-editor-box" v-if="this.$store.getters.userInfo">
+                    <editor :toolbarConfig="{ excludeKeys: ['header1', 'header2','header3', 'redo', 'todo', 'undo', 'fullScreen', '|']}" :clickButtonStatus="this.clickButtonStatus" @editorHtml="editorHtml" />
                 </div>
                 <div class="article-vistor-comment-list">
-                    <comment v-for="item in commentList" :key="item.id" :renderData="item"/>
+                    <comment v-for="item in commentList" :key="item.commentId" :renderData="item" @getReplyUser="getReplyUser"/>
+                    <span class="empty-list" v-if="this.commentList.length === 0">没有评论哦，赶快留下你的评论吧！</span>
                 </div>
+                <el-pagination
+                    style="padding: 1rem 0;"
+                    v-if="this.pageInstance.total !== null" 
+                    small 
+                    background
+                    layout="sizes, prev, pager, next" 
+                    :total="this.pageInstance.total" 
+                    :page-sizes="[15, 30, 50, 100]" 
+                    :current-page="this.requestInstance.pageNum" 
+                    @update:current-page="currentPageChange" 
+                    :page-size="this.requestInstance.pageSize"
+                    @update:page-size="pageSizeChange"
+                />
             </footer>
         </main>
+        <transition name="fade">
+            <div class="comment-reply" v-if="this.commentReplyBoxStatus">
+                <div class="comment-title">
+                    <span>回复 @ {{this.replyUserObject.replyUser.replyNickName}}</span>
+                    <i class="fas fa-arrow-alt-circle-down" @click="this.commentReplyBoxStatus = false" />
+                </div>
+                <editor :toolbarConfig="{ excludeKeys: ['header1', 'header2','header3', 'redo', 'todo', 'undo', 'fullScreen', '|']}" @editorHtml="replyToServe" />
+            </div>
+        </transition>
     </div>
 </template>
 <script>
 import comment from '@/components/comment.vue'
 import editor from '@/components/editor.vue'
-import { articleContentGet , increaseArticleLike } from '@/util/article.js'
+import { articleContentGet , increaseArticleLike , articleCommentGet , replyComment } from '@/util/article.js'
 import { ElMessage , ElMessageBox } from 'element-plus'
 export default {
     components:{
@@ -81,32 +75,34 @@ export default {
         return{
 
             increaseLikeStatus: false,
+            clickButtonStatus: false,
+            commentReplyBoxStatus: false,
 
             articleContent: '',
-            commentList: [
-                {
-                    id: 0,
-                    commentHead: require('@/assets/image/userHead.jpg'),
-                    commentName: '老王',
-                    commentTime: '2022-08-08',
-                    commentLike: '12',
-                    commentContent: '<p>aaaaaaaaaaa</p>'
-                },
-                {
-                    id: 1,
-                    commentHead: require('@/assets/image/userHead.jpg'),
-                    commentName: '老王',
-                    commentTime: '2022-08-08',
-                    commentLike: '12',
-                    commentContent: '<p>bbbbbbbbbb</p>'
-                }
-            ]
+            commentList: [],
+
+            replyUserObject: {},
+
+            //请求参数实例
+            requestInstance: {
+                pageNum: 1,
+                pageSize: 15,
+                articleId: this.$route.query.id,
+            },
+
+            //分页参数实例
+            pageInstance: {
+                total: null,
+                current: 1,
+                size: 15,
+            }
         }
     },
     mounted(){
         articleContentGet({'articleId': this.$route.query.id}).then(resq => {
             if(resq.code == 200){
                 this.articleContent = resq.data
+                this.mainGetComment()
             } else {
                 ElMessage({type: 'error', message: resq.message})
             }
@@ -115,6 +111,20 @@ export default {
         })
     },
     methods:{
+        mainGetComment(){
+            articleCommentGet(this.requestInstance).then(resq => {
+                if(resq.code === 200){
+                    this.commentList = resq.data.list
+                    this.pageInstance.total = resq.data.total
+                    this.pageInstance.current = resq.data.current
+                    this.pageInstance.size = resq.data.size
+                } else {
+                    ElMessage({type: 'error', message: resq.message})
+                }
+            }).catch(err => {
+                ElMessage({type: 'error', message: err.message})
+            })
+        },
         addArticleLike(articleId){
             if(!this.increaseLikeStatus){
                 this.increaseLikeStatus = true
@@ -139,6 +149,64 @@ export default {
                     this.increaseLikeStatus = false
                 })
             }
+        },
+        editorHtml(value){
+            this.clickButtonStatus = true
+            if(value === '<p><br></p>' || value === null || value === ''){
+                ElMessage({type: 'warning', message: '不能提交空白哦 ˋ( ° ▽、° )'})
+                this.clickButtonStatus = false
+                return 
+            }
+            let data = new FormData()
+            data.append('articleId', this.$route.query.id)
+            data.append('content', value)
+            replyComment(data).then(resq => {
+                if(resq.code === 200){
+                    ElMessage({type: 'success', message: resq.message})
+                    this.mainGetComment()
+                    value = ''
+                } else {
+                    ElMessage({type: 'error', message: resq.message})
+                }
+                this.clickButtonStatus = false
+            }).catch(err => {
+                ElMessage({type: 'error', message: err.message})
+                this.clickButtonStatus = false
+            })
+        },
+        getReplyUser(object){
+            this.commentReplyBoxStatus = true
+            this.replyUserObject = object
+        },
+        replyToServe(value){
+            this.clickButtonStatus = true
+            let data = new FormData()
+            data.append('articleId', this.$route.query.id)
+            data.append('content', value)
+            data.append('replyCommentId', this.replyUserObject.commentId)
+            data.append('replyUserId', this.replyUserObject.replyUser.replyUserId)
+            replyComment(data).then(resq => {
+                if(resq.code === 200){
+                    ElMessage({type: 'success', message: resq.message})
+                    this.mainGetComment()
+                    this.replyUserObject = {}
+                    this.commentReplyBoxStatus = false
+                } else {
+                    ElMessage({type: 'error', message: resq.message})
+                }
+                this.clickButtonStatus = false
+            }).catch(err => {
+                ElMessage({type: 'error', message: err.message})
+                this.clickButtonStatus = false
+            })
+        },
+        pageSizeChange(e){
+            this.requestInstance.pageSize = e
+            this.mainGetComment()
+        },
+        currentPageChange(e){
+            this.requestInstance.pageNum = e
+            this.mainGetComment()
         }
     }
 }
@@ -148,8 +216,9 @@ export default {
 {
     width: 100%;
     max-width: 768px;
-    margin: 0 auto;
     padding-top: 2.7rem;
+    position: relative;
+    margin: 0 auto;
     .article-container
     {
         width: 100%;
@@ -266,6 +335,7 @@ export default {
             padding: 0 1rem;
             display: flex;
             flex-direction: column;
+            align-items: center;
             .article-vistor-title
             {
                 width: 100%;
@@ -281,15 +351,80 @@ export default {
             {
                 width: 100%;
                 border-radius: 0.3rem;
-                overflow: hidden;
             }
             .article-vistor-comment-list
             {
                 width: 100%;
                 margin-top: 0.5rem;
+                .empty-list
+                {
+                    width: 100%;
+                    height: 4rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 0.72rem;
+                    transition: color 0.3s;
+                }
             }
         }
     }
-    
+    .comment-reply
+    {
+        width: 100%;
+        position: fixed;
+        max-width: 768px;
+        height: 25rem;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        background-color: #ffffff;
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.3);
+        border-radius: 0.3rem 0.3rem 0 0;
+        transition: transform 0.3s, opacity 0.3s;
+        .comment-title
+        {
+            width: 100%;
+            height: 1.5rem;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            span
+            {
+                font-size: 0.65rem;
+            }
+            i
+            {
+                cursor: pointer;
+                transition: color 0.3s;
+            }
+            i:hover
+            {
+                color: cadetblue;
+            }
+        }
+    }
+    .fade-enter-from
+    {
+        transform: translateY(25rem);
+        opacity: 0;
+    }
+    .fade-enter-to
+    {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    .fade-leave-from
+    {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    .fade-leave-to
+    {
+        transform: translateY(25rem);
+        opacity: 0;
+    }
 }
 </style>

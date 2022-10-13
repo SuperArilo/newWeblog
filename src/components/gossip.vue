@@ -40,16 +40,6 @@
                         'header1',
                         'header2',
                         'header3',
-                        'bulletedList',
-                        'codeBlock',
-                        'insertImage',
-                        'insertLink',
-                        'insertTable',
-                        'insertVideo',
-                        'justifyCenter',
-                        'justifyLeft',
-                        'justifyRight',
-                        'numberedList', 
                         'redo',
                         'todo',
                         'undo',
@@ -64,11 +54,8 @@
                         'through'
                     ]
                 }"/>
-                <div class="submit-button">
-                    <button type="button" v-wave="{color: 'rgba(0, 0, 0, 0.7)'}">提交</button>
-                </div>
                 <div class="gossip-comment-list">
-                    <comment v-for="item in commentList" :key="item.id" :renderData="item"/>
+                    
                 </div>
             </footer>
         </el-collapse-transition>
@@ -209,22 +196,6 @@ export default {
     {
         width: 100%;
         padding-top: 0.5rem;
-        .submit-button
-        {
-            width: 100%;
-            margin: 0.5rem 0;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            padding: 0 1rem;
-            button
-            {
-                height: 1.5rem;
-                padding: 0 0.6rem;
-                border-radius: 0.3rem;
-                background-color: rgb(4, 120, 190);
-            }
-        }
         .gossip-comment-list
         {
             width: 100%;

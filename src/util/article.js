@@ -31,3 +31,32 @@ export const increaseArticleLike = (query) => {
         data: query,
     })
 }
+//文章评论获取
+export const articleCommentGet = (params) => {
+    return request({
+        url: '/article/comment/list',
+        method: 'get',
+        params: params,
+        paramsSerializer: params => {
+            return Qs.stringify(params, {arrayFormat: 'repeat'})
+        }
+    })
+}
+
+//评论文章或者回复某个人
+export const replyComment = (query) => {
+    return request({
+        url: '/article/comment/add',
+        method: 'post',
+        data: query,
+    })
+}
+
+//喜欢某条评论
+export const likeComment = (query) => {
+    return request({
+        url: '/article/comment/like',
+        method: 'put',
+        data: query,
+    })
+}

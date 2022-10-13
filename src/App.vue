@@ -409,9 +409,11 @@ export default {
                     this.$store.commit('userInfoSet', resq.data.user)
                 } else {
                     ElMessage({type: 'error', message: resq.message})
+                    localStorage.removeItem('token')
                 }
             }).catch(err => {
                 ElMessage({type: 'error', message: err.message})
+                localStorage.removeItem('token')
             })
         },
         registerSystem(){
@@ -1073,7 +1075,7 @@ ul , li
     }
     .editer-render
     {
-        font-size: 0.6rem !important;
+        font-size: 0.7rem !important;
         blockquote
         {
             display: block;
@@ -1081,6 +1083,7 @@ ul , li
             margin: 0.3rem 0;
             line-height: 2;
             font-size: 100%;
+            transition: color 0.3s, background-color 0.3s, border 0.3s;
         }
         hr
         {
@@ -1101,14 +1104,21 @@ ul , li
             margin: 0.5rem 0;
             line-height: 1.5;
         }
+        th , td , td , table
+        {
+            transition: border 0.3s , background-color 0.3s , color 0.3s;
+        }
         table
         {
+            border-collapse: collapse;
+            
             th , td
             {
 
                 padding: 0.1rem 0.3rem;
                 min-height: 1.2rem;
                 height: 1.2rem;
+                
             }
             th
             {

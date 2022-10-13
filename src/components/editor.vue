@@ -1,99 +1,102 @@
 <template>
     <div class="editor-box" :class="this.$store.getters.darkModel ? 'editor-dark-model':''">
-        <Toolbar class="toolbar" :editor="editorRef" :defaultConfig="this.toolbarConfig" :mode="mode" />
-        <Editor style="height: 300px;" v-model="valueHtml" :defaultConfig="editorConfig" :mode="mode" @onCreated="handleCreated" @onFocus="handleFocus" />
+        <Toolbar class="toolbar" :editor="editorRef" :defaultConfig="props.toolbarConfig" mode="default" />
+        <Editor style="height: 17.5rem;" v-model="data.valueHtml" :defaultConfig="data.editorConfig" mode="default" @onCreated="handleCreated" @onChange="handleChange" />
+        <div class="editor-button">
+            <asuka-button text="提交" :icon="props.clickButtonStatus ? 'fas fa-circle-notch fa-spin':'fas fa-check'" @click="sendToServer" />
+        </div>
     </div>
 </template>
-<script>
+<script setup>
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { DomEditor } from '@wangeditor/editor'
 import '@wangeditor/editor/dist/css/style.css'
-import { onBeforeUnmount, ref, shallowRef, onMounted , defineProps, toRefs } from 'vue'
-export default {
-    components: { 
-        Editor, Toolbar
+import asukaButton from '@/components/asukaButton.vue'
+import { onBeforeUnmount, ref, shallowRef, onMounted , toRefs, reactive , watch } from 'vue'
+import { customUploadImage } from '@/util/upload.js'
+const emit = defineEmits(['editorHtml'])
+const props = defineProps({
+    toolbarConfig: {
+        type: Object,
+        default: {}
     },
-    props:{
-        toolbarConfig: {
-            type: Object
+    clickButtonStatus: {
+        type: Boolean,
+        default: false
+    }
+})
+const data = reactive({
+    valueHtml: '',
+    editorConfig: {
+        placeholder: '友好的留言吧',
+        autoFocus: false,
+        MENU_CONF: {
+            uploadImage: {
+                async customUpload(file, insertFn){
+                    let data = new FormData()
+                    data.append('file', file)
+                    customUploadImage(data).then(resq => {
+                        if(resq.code === 200){
+                            insertFn(resq.data)
+                        } else {
+                            ElMessage({type: 'error', message: resq.message})
+                        }
+                    }).catch(err => {
+                        ElMessage({type: 'error', message: err.message})
+                    })
+                },
+            }
         }
-    },
-    setup(props) {
-        const editorRef = shallowRef()
-        const valueHtml = ''
-        onMounted(() => {
-        })
-        const toolbarConfig = {
-            excludeKeys: [
-                'blockquote',
-                'header1',
-                'header2',
-                'header3',
-                'bulletedList',
-                'codeBlock',
-                'insertImage',
-                'insertLink',
-                'insertTable',
-                'insertVideo',
-                'justifyCenter',
-                'justifyLeft',
-                'justifyRight',
-                'numberedList', 
-                'redo',
-                'todo',
-                'undo',
-                'uploadImage',
-                'group-image',
-                'fullScreen',
-                '|',
-                'clearStyle',
-                'bold',
-                'underline',
-                'italic',
-                'through'
-            ]
-        }
-        const editorConfig = { placeholder: '', autoFocus: false }
-        onBeforeUnmount(() => {
-            const editor = editorRef.value
-            if (editor == null) return
-            setTimeout(() => {
-                editor.destroy()
-            }, 1000)
-        })
-
-        const handleCreated = (editor) => {
-            editorRef.value = editor
-        }
-
-        const handleFocus = (editor) => {
-            // console.log(DomEditor.getToolbar(editor).getConfig().toolbarKeys)
-        }
-        return {
-            editorRef,
-            valueHtml,
-            mode: 'simple', // 或 'simple'
-            editorConfig,
-            handleCreated,
-            handleFocus
-        }
-    },
+    }
+})
+const editorRef = shallowRef()
+onMounted(() => {})
+onBeforeUnmount(() => {
+    const editor = editorRef.value
+    if (editor == null) return
+    setTimeout(() => {
+        editor.destroy()
+    }, 1000)
+})
+const handleCreated = (editor) => {
+    editorRef.value = editor
 }
+const sendToServer = () => {
+    if(!props.clickButtonStatus){
+        emit('editorHtml', data.valueHtml)
+    }
+}
+const handleChange = (editor) => {
+}
+watch(
+    () => props.clickButtonStatus, (n, o) => {
+        if(!n){
+            data.valueHtml = ''
+        }
+    }
+)
 </script>
 <style lang="scss" scoped>
 .editor-box
 {
     width: 100%;
+    height: 100%;
     .toolbar
     {
-        min-height: 1.9rem;
+        height: 4rem;
         transition: border 0.3s;
+        border-top: solid 1px rgb(212, 212, 212);
         border-bottom: solid 1px rgb(212, 212, 212);
     }
-}
-::v-deep(.w-e-full-screen-container)
-{
-    z-index: 10;
+    .editor-button
+    {
+        width: 100%;
+        height: 2rem;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+    }
 }
 ::v-deep(.w-e-bar)
 {
@@ -101,12 +104,15 @@ export default {
     transition: background-color 0.3s;
     .w-e-bar-item
     {
-        height: 1.8rem;
         button
         {
             height: 100%;
         }
     }
+}
+::v-deep(.w-e-text-placeholder)
+{
+    font-size: 0.6rem;
 }
 ::v-deep(.w-e-text-container)
 {
