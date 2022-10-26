@@ -24,7 +24,7 @@
                     </div>
                 </div>
             </nav>
-            <div class="article-show-content editer-render" v-html="this.articleContent.articleContent"/>
+            <div class="article-show-content editor-render" v-html="this.articleContent.articleContent"/>
             <footer class="article-vistor">
                 <span class="article-vistor-title">评论</span>
                 <div class="vistor-editor-box" v-if="this.$store.getters.userInfo">
@@ -32,7 +32,7 @@
                 </div>
                 <div class="article-vistor-comment-list">
                     <transition-group name="list">
-                        <comment v-for="item in commentList" :key="item.commentId" :renderData="item" @getReplyUser="getReplyUser" @deleteComment="deleteArtComment" @likeComment="likeArtComment"/>
+                        <comment v-for="item in commentList" :key="item.commentId" ref="comment" :renderData="item" @getContent="replyToServe" @deleteComment="deleteArtComment" @likeComment="likeArtComment" :clickButtonStatus="this.clickButtonStatus"/>
                         <span class="empty-list" v-if="this.commentList.length === 0">没有评论哦，赶快留下你的评论吧！</span>
                     </transition-group>
                 </div>
@@ -51,16 +51,6 @@
                 />
             </footer>
         </main>
-        <transition name="fade">
-            <div class="comment-reply" v-if="this.commentReplyBoxStatus">
-                <div class="comment-title">
-                    <span>回复 @ {{this.replyUserObject.replyUser.replyNickName}}</span>
-                    <i class="fas fa-arrow-alt-circle-down" @click="this.commentReplyBoxStatus = false" />
-                </div>
-                <editor/>
-                <!-- <editor :toolbarConfig="{ excludeKeys: ['header1', 'header2','header3', 'redo', 'todo', 'undo', 'fullScreen', '|']}" @editorHtml="replyToServe" /> -->
-            </div>
-        </transition>
     </div>
 </template>
 <script>
@@ -77,12 +67,9 @@ export default {
 
             increaseLikeStatus: false,
             clickButtonStatus: false,
-            commentReplyBoxStatus: false,
 
             articleContent: '',
             commentList: [],
-
-            replyUserObject: {},
 
             //请求参数实例
             requestInstance: {
@@ -175,23 +162,20 @@ export default {
                 this.clickButtonStatus = false
             })
         },
-        getReplyUser(object){
-            this.commentReplyBoxStatus = true
-            this.replyUserObject = object
-        },
-        replyToServe(value){
+        replyToServe(object, value){
             this.clickButtonStatus = true
             let data = new FormData()
             data.append('articleId', this.$route.query.id)
             data.append('content', value)
-            data.append('replyCommentId', this.replyUserObject.commentId)
-            data.append('replyUserId', this.replyUserObject.replyUser.replyUserId)
+            data.append('replyCommentId', object.commentId)
+            data.append('replyUserId', object.replyUser.replyUserId)
             replyComment(data).then(resq => {
                 if(resq.code === 200){
                     ElMessage({type: 'success', message: resq.message})
                     this.mainGetComment()
-                    this.replyUserObject = {}
-                    this.commentReplyBoxStatus = false
+                    setTimeout(() => {
+                        this.$refs.comment[this.$refs.comment.findIndex(item => item.renderData.commentId === object.commentId)].commentEditorStatus = false
+                    }, 500)
                 } else {
                     ElMessage({type: 'error', message: resq.message})
                 }
@@ -458,26 +442,6 @@ export default {
                 color: cadetblue;
             }
         }
-    }
-    .fade-enter-from
-    {
-        transform: translateY(25rem);
-        opacity: 0;
-    }
-    .fade-enter-to
-    {
-        transform: translateY(0);
-        opacity: 1;
-    }
-    .fade-leave-from
-    {
-        transform: translateY(0);
-        opacity: 1;
-    }
-    .fade-leave-to
-    {
-        transform: translateY(25rem);
-        opacity: 0;
     }
 }
 </style>

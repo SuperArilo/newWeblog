@@ -551,7 +551,7 @@ ul , li
         {
             width: 100%;
             height: 2.7rem;
-            transition: background 0.3s;
+            transition: background-color 0.3s;
             display: flex;
             align-items: center;
             position: fixed;
@@ -1097,9 +1097,20 @@ ul , li
 }
 .editor-render
 {
+    transition: color 0.3s, background-color 0.3s;
     font-size: 10pt;
+    line-height: 1.4;
+    p
+    {
+        display: block;
+        margin-block-start: 1em;
+        margin-block-end: 1em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+    }
     table {
         border-collapse: collapse;
+        transition: color 0.3s;
     }
     table:not([cellpadding]) th,
     table:not([cellpadding]) td {
@@ -1113,37 +1124,37 @@ ul , li
     table[border]:not([border="0"]):not([style*="border-style"]) td {
         border-style: solid;
     }
-    table[border]:not([border="0"]):not([style*="border-color"]) th,
-    table[border]:not([border="0"]):not([style*="border-color"]) td {
-        border-color: #ccc;
-    }
     figure {
         display: table;
+        transition: color 0.3s;
         margin: 1rem auto;
     }
     figure figcaption {
-        color: #999;
         display: block;
         margin-top: 0.25rem;
         text-align: center;
+        transition: color 0.3s;
     }
     hr {
-        border-color: #ccc;
         border-style: solid;
         border-width: 1px 0 0 0;
+        transition: color 0.3s;
     }
     code {
-        background-color: #e8e8e8;
         border-radius: 3px;
         padding: 0.1rem 0.2rem;
+        transition: color 0.3s;
     }
 }
+.editor-render blockquote
+{
+    transition: color 0.3s, background-color 0.3s;
+}
 .editor-render:not([dir=rtl]) blockquote{
-    border-left: 2px solid #ccc;
     padding-left: 1rem;
+    
 }
 .editor-render[dir=rtl] blockquote {
-    border-right: 2px solid #ccc;
     padding-right: 1rem;
 }
 @media screen and (min-width:1400px)

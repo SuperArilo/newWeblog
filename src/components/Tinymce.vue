@@ -20,7 +20,7 @@ import "tinymce/plugins/media" // 插入视频插件
 import "tinymce/plugins/table" // 插入表格插件
 import "tinymce/plugins/lists" // 列表插件
 import "tinymce/plugins/wordcount" // 字数统计插件
-import { reactive, ref, watch, nextTick } from "vue"
+import { reactive, ref, watch, nextTick, onBeforeUnmount, onMounted } from "vue"
 import { useStore } from "vuex"
 const store = useStore()
 const emits = defineEmits(['getContent'])
@@ -53,7 +53,7 @@ const init = reactive({
 	height: '14rem',
 	branding: false,
 	menubar: true, //顶部菜单栏显示
-	image_dimensions: true, //去除宽高属性
+	image_dimensions: false, //去除宽高属性
 	plugins: props.plugins,
 	// toolbar: props.toolbar,
     content_style: "body {font-size:10pt;}",
@@ -75,6 +75,9 @@ const clickSubmitButton = () => {
 		emits('getContent', htmlValue.value)
 	}
 }
+onMounted(() => {
+	tinymce.init({})
+})
 watch(
 	() => props.isDark, (n, o) => {
 		const instance = tinymce.get(init.selector)
@@ -99,6 +102,12 @@ watch(
 .editor-box
 {
 	width: 100%;
+	min-height: 14rem;
+	margin-top: 1rem;
+	textarea
+	{
+		display: none;
+	}
 	.editor-button
 	{
 		width: 100%;

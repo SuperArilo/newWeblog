@@ -18,18 +18,37 @@
             </div>
         </div>
         <div class="comment-content-render editor-render" v-html="this.reRenderContent" />
+         <el-collapse-transition>
+            <div v-if="this.commentEditorStatus" class="comment-editor">
+                <tinymce @getContent="getContent" :clickButtonStatus="clickButtonStatus"/>
+            </div>
+         </el-collapse-transition>
+        <!-- <transition name="editor-fade" mode="out-in">
+            
+        </transition> -->
     </div>
 </template>
 <script>
+import tinymce from '@/components/Tinymce.vue'
 export default {
+    components: {
+        tinymce
+    },
     props:{
         renderData: {
             type: Object,
             default: null
+        },
+        clickButtonStatus: {
+            type: Boolean,
+            default: false
         }
     },
     data(){
         return{
+
+            commentEditorStatus: false,
+
             reRenderContent: ''
         }
     },
@@ -43,14 +62,17 @@ export default {
     mounted(){
     },
     methods:{
-        clickReply(object){
-            this.$emit('getReplyUser', object)
+        clickReply(){
+            this.commentEditorStatus =! this.commentEditorStatus
         },
         clickLikeComment(commentId){
             this.$emit('likeComment', commentId)
         },
         clickDeleteComment(commentId){
             this.$emit('deleteComment', commentId)
+        },
+        getContent(value){
+            this.$emit('getContent', this.renderData, value)
         }
     }
 }
@@ -62,6 +84,7 @@ export default {
     display: flex;
     flex-direction: column;
     transition: border 0.3s;
+    position: relative;
     .comment-top
     {
         width: 100%;
@@ -161,7 +184,23 @@ export default {
         padding: 0.5rem 1rem;
         min-height: 3rem;
         border-radius: 0.2rem;
-        transition: background-color 0.3s;
+    }
+    .comment-editor
+    {
+        width: 100%;
+    }
+    .editor-fade-move , .editor-fade-enter-active , .editor-fade-leave-active
+    {
+        transition: all 0.2s;
+    }
+    .editor-fade-enter-from , .editor-fade-leave-to
+    {
+        opacity: 0;
+        transform: translateY(-1rem);
+    }
+    .editor-fade-leave-active
+    {
+        position: absolute;
     }
 }
 </style>

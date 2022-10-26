@@ -12,7 +12,7 @@
                 </div>
             </div>
         </header>
-        <div class="gossip-render-content editer-render" v-html="this.renderData.content"/>
+        <div class="gossip-render-content editor-render" v-html="this.renderData.content"/>
         <div class="gossip-state">
             <span>{{this.renderData.likes}}个喜欢</span>
             <span>|</span>
@@ -34,35 +34,18 @@
         </div>
         <el-collapse-transition>
             <footer v-if="this.isOpenComment" class="gossip-comment-box">
-                <editor :toolbarConfig="{
-                    excludeKeys: [
-                        'blockquote',
-                        'header1',
-                        'header2',
-                        'header3',
-                        'redo',
-                        'todo',
-                        'undo',
-                        'uploadImage',
-                        'group-image',
-                        'fullScreen',
-                        '|',
-                        'clearStyle',
-                        'bold',
-                        'underline',
-                        'italic',
-                        'through'
-                    ]
-                }" :clickButtonStatus="this.clickButtonStatus" @editorHtml="replySendToServer"/>
+                <editor :isDark="this.$store.getters.darkModel" @getContent="replySendToServer"/>
                 <div class="gossip-comment-list">
-                    <comment v-for="item in this.commentList" :key="item.commentId" :renderData="item" />
+                    <transition-group name="list" mode="out-in">
+                        <comment v-for="item in this.commentList" :key="item.commentId" :renderData="item" />
+                    </transition-group>
                 </div>
             </footer>
         </el-collapse-transition>
     </div>
 </template>
 <script>
-import editor from '@/components/editor.vue'
+import editor from '@/components/Tinymce.vue'
 import comment from '@/components/comment.vue'
 import { gossipCommentList , gossipCommentCreate } from '@/util/gossip.js'
 import { ElMessage , ElMessageBox } from 'element-plus'
@@ -109,7 +92,9 @@ export default {
         openCommentList(){
             this.isOpenComment =! this.isOpenComment
             if(this.commentList.length === 0){
-                this.getCommentList()
+                setTimeout(() => {
+                    this.getCommentList()
+                }, 1000)
             }
         },
         replySendToServer(value){
@@ -241,6 +226,19 @@ export default {
         .gossip-comment-list
         {
             width: 100%;
+        }
+        .list-move , .list-enter-active , .list-leave-active
+        {
+            transition: all 0.3s ease-in-out;
+        }
+        .list-enter-from , .list-leave-to
+        {
+            opacity: 0;
+            transform: translateY(2rem);
+        }
+        .list-leave-active
+        {
+            position: absolute;
         }
     }
 }
