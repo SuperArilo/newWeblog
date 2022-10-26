@@ -1,17 +1,21 @@
 <template>
     <div class="friend-box">
         <div class="friend-list">
-            <div class="friend-item" v-for="item in 15" :key="item">
+            <div class="friend-item" v-for="item in 2" :key="item">
                 <img src="../assets/image/userHead.jpg" title="head"/>
                 <span class="friend-name">王小美</span>
                 <span class="last-time">2个月前</span>
             </div>
         </div>
+        <tinymce />
     </div>
 </template>
 <script>
+import tinymce from '@/components/Tinymce.vue'
 export default {
-    
+    components:{
+        tinymce
+    }
 }
 </script>
 <style lang="scss" scoped>

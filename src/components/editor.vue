@@ -85,8 +85,8 @@ watch(
     {
         height: 4rem;
         transition: border 0.3s;
-        border-top: solid 1px rgb(212, 212, 212);
-        border-bottom: solid 1px rgb(212, 212, 212);
+        border-top: solid 1px rgb(158, 158, 158);
+        border-bottom: solid 1px rgb(158, 158, 158);
     }
     .editor-button
     {
@@ -186,8 +186,7 @@ watch(
                 }
             }
         }
-    }
-    
+    } 
     ::v-deep(.w-e-text-container)
     {
         background-color: rgb(43, 43, 43);
@@ -195,6 +194,10 @@ watch(
         {
             color: #ffffff;
         }
+    }
+    ::v-deep(.w-e-bar-item-menus-container)
+    {
+        background-color: transparent !important;
     }
 }
 </style>

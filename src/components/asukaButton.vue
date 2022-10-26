@@ -33,7 +33,6 @@ button
     height: 1.5rem;
     border-radius: 0.2rem;
     font-size: 0.6rem;
-    margin-right: 1rem;
     outline: none;
     transition: color 0.3s, background-color 0.3s;
     white-space: nowrap;
@@ -41,8 +40,12 @@ button
 }
 .normal
 {
-    background-color: rgb(245, 245, 245);
-    color: #777777;
+    background-color: #e8f1f8;
+    color: #086be6;
+}
+.normal:hover
+{
+    background-color: rgb(180, 215, 255);
 }
 .dark
 {

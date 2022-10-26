@@ -1,29 +1,29 @@
 <template>
-    <div class="gossip-box">
+    <div class="gossip-box" v-if="this.renderData">
         <header class="gossip-title">
             <div class="gossip-title-left">
-                <img :src="data.userHead" :title="data.name"/>
+                <img :src="this.renderData.avatar" :title="this.renderData.nickName"/>
                 <div class="gossip-title-left-info">
                     <div>
-                        <span>{{data.name}}</span>
-                        <span>1天前</span>
+                        <span>{{this.renderData.nickName}}</span>
+                        <span>{{this.renderData.createTime}}</span>
                     </div>
-                    <span class="user-describe">{{data.describe}}</span>
+                    <span class="user-describe"></span>
                 </div>
             </div>
         </header>
-        <div class="gossip-render-content editer-render" v-html="data.content"/>
+        <div class="gossip-render-content editer-render" v-html="this.renderData.content"/>
         <div class="gossip-state">
-            <span>0个喜欢</span>
+            <span>{{this.renderData.likes}}个喜欢</span>
             <span>|</span>
-            <span>1个评论</span>
+            <span>{{this.renderData.comments}}个评论</span>
         </div>
         <div class="gossip-button-box">
             <button type="button" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
                 <i class="fas fa-heart"/>
                 喜欢
             </button>
-            <button @click="this.isOpenComment =! this.isOpenComment" type="button" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
+            <button @click="openCommentList" type="button" v-wave="{color: this.$store.getters.darkModel ? 'rgba(255, 255, 255, 0.7)':'rgba(0, 0, 0, 0.7)'}">
                 <i class="fas fa-comment-dots"/>
                 评论
             </button>
@@ -53,9 +53,9 @@
                         'italic',
                         'through'
                     ]
-                }"/>
+                }" :clickButtonStatus="this.clickButtonStatus" @editorHtml="replySendToServer"/>
                 <div class="gossip-comment-list">
-                    
+                    <comment v-for="item in this.commentList" :key="item.commentId" :renderData="item" />
                 </div>
             </footer>
         </el-collapse-transition>
@@ -64,33 +64,72 @@
 <script>
 import editor from '@/components/editor.vue'
 import comment from '@/components/comment.vue'
+import { gossipCommentList , gossipCommentCreate } from '@/util/gossip.js'
+import { ElMessage , ElMessageBox } from 'element-plus'
 export default {
     components: { 
         editor, comment
     },
     data(){
         return{
+
+            clickButtonStatus: false,
+
             isOpenComment: false,
-            commentList:[
-                {
-                    id: 0,
-                    commentHead: require('@/assets/image/userHead.jpg'),
-                    commentName: '老王',
-                    commentTime: '2022-08-08',
-                    commentLike: '12',
-                    commentContent: '<p>aaaaaaaaaaa</p>'
-                }
-            ]
+            commentList: [],
+
+            //请求参数实例
+            requestInstance: {
+                pageNum: 1,
+                pageSize: 10,
+                gossipId: this.renderData ? this.renderData.id : null
+            }
         }
     },
     props:{
-        data: {
-            type: Object
+        renderData: {
+            type: Object,
+            default: null
         }
     },
     mounted(){
     },
     methods:{
+        getCommentList(){
+            gossipCommentList(this.requestInstance).then(resq => {
+                if(resq.code === 200) {
+                    this.commentList = resq.data.list
+                } else {
+                    ElMessage({type: 'error', message: resq.message})
+                }
+            }).catch(err => {
+                ElMessage({type: 'error', message: err.message})
+            })
+        },
+        openCommentList(){
+            this.isOpenComment =! this.isOpenComment
+            if(this.commentList.length === 0){
+                this.getCommentList()
+            }
+        },
+        replySendToServer(value){
+            this.clickButtonStatus = true
+            let data = new FormData()
+            data.append('gossipId', this.renderData.id)
+            data.append('content', value)
+            gossipCommentCreate(data).then(resq => {
+                if(resq.code === 200) {
+                    ElMessage({type: 'success', message: resq.message})
+                    this.getCommentList()
+                } else {
+                    ElMessage({type: 'error', message: resq.message})
+                }
+                this.clickButtonStatus = false
+            }).catch(err => {
+                ElMessage({type: 'error', message: err.message})
+                this.clickButtonStatus = false
+            })
+        }
     }
 }
 </script>
@@ -99,7 +138,7 @@ export default {
 {
     width: 100%;
     margin-top: 0.8rem;
-    padding: 0.5rem;
+    padding: 0.5rem 1rem;
     border-radius: 0.3rem;
     transition: background-color 0.3s;
     .gossip-title
@@ -149,12 +188,15 @@ export default {
             }
         }
     }
-    .gossip-render-content , .editer-render
+    .gossip-render-content
     {
         width: 100%;
         flex: 1;
         min-height: 3rem;
-        
+        padding: 0.5rem 1rem;
+        transition: background-color 0.3s;
+        margin-top: 0.25rem;
+        border-radius: 0.25rem;
     }
     .gossip-state
     {

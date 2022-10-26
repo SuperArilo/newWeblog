@@ -60,3 +60,12 @@ export const likeComment = (query) => {
         data: query,
     })
 }
+
+//删除某条评论
+export const deleteComment = (query) => {
+    return request({
+        url: '/article/comment/delete',
+        method: 'Delete',
+        data: query,
+    })
+}

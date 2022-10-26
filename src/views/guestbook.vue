@@ -50,24 +50,7 @@ export default {
     },
     data(){
         return{
-            commentList: [
-                {
-                    id: 0,
-                    commentHead: require('@/assets/image/userHead.jpg'),
-                    commentName: '老王',
-                    commentTime: '2022-08-08',
-                    commentLike: '12',
-                    commentContent: '<p>aaaaaaaaaaa</p>'
-                },
-                {
-                    id: 1,
-                    commentHead: require('@/assets/image/userHead.jpg'),
-                    commentName: '老王',
-                    commentTime: '2022-08-08',
-                    commentLike: '12',
-                    commentContent: '<p>bbbbbbbbbb</p>'
-                }
-            ]
+            commentList: []
         }
     }
 }

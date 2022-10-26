@@ -24,21 +24,21 @@
                     </div>
                 </div>
             </nav>
-            <div class="article-show-content editer-render" v-html="this.articleContent.articleContent">
-
-            </div>
+            <div class="article-show-content editer-render" v-html="this.articleContent.articleContent"/>
             <footer class="article-vistor">
                 <span class="article-vistor-title">评论</span>
                 <div class="vistor-editor-box" v-if="this.$store.getters.userInfo">
-                    <editor :toolbarConfig="{ excludeKeys: ['header1', 'header2','header3', 'redo', 'todo', 'undo', 'fullScreen', '|']}" :clickButtonStatus="this.clickButtonStatus" @editorHtml="editorHtml" />
+                    <editor :clickButtonStatus="this.clickButtonStatus" @getContent="makeComment" :isDark="this.$store.getters.darkModel"/>
                 </div>
                 <div class="article-vistor-comment-list">
-                    <comment v-for="item in commentList" :key="item.commentId" :renderData="item" @getReplyUser="getReplyUser"/>
-                    <span class="empty-list" v-if="this.commentList.length === 0">没有评论哦，赶快留下你的评论吧！</span>
+                    <transition-group name="list">
+                        <comment v-for="item in commentList" :key="item.commentId" :renderData="item" @getReplyUser="getReplyUser" @deleteComment="deleteArtComment" @likeComment="likeArtComment"/>
+                        <span class="empty-list" v-if="this.commentList.length === 0">没有评论哦，赶快留下你的评论吧！</span>
+                    </transition-group>
                 </div>
                 <el-pagination
                     style="padding: 1rem 0;"
-                    v-if="this.pageInstance.total !== null" 
+                    v-if="this.pageInstance.total !== 0" 
                     small 
                     background
                     layout="sizes, prev, pager, next" 
@@ -57,15 +57,16 @@
                     <span>回复 @ {{this.replyUserObject.replyUser.replyNickName}}</span>
                     <i class="fas fa-arrow-alt-circle-down" @click="this.commentReplyBoxStatus = false" />
                 </div>
-                <editor :toolbarConfig="{ excludeKeys: ['header1', 'header2','header3', 'redo', 'todo', 'undo', 'fullScreen', '|']}" @editorHtml="replyToServe" />
+                <editor/>
+                <!-- <editor :toolbarConfig="{ excludeKeys: ['header1', 'header2','header3', 'redo', 'todo', 'undo', 'fullScreen', '|']}" @editorHtml="replyToServe" /> -->
             </div>
         </transition>
     </div>
 </template>
 <script>
 import comment from '@/components/comment.vue'
-import editor from '@/components/editor.vue'
-import { articleContentGet , increaseArticleLike , articleCommentGet , replyComment } from '@/util/article.js'
+import editor from '@/components/Tinymce.vue'
+import { articleContentGet , increaseArticleLike , articleCommentGet , replyComment , deleteComment , likeComment } from '@/util/article.js'
 import { ElMessage , ElMessageBox } from 'element-plus'
 export default {
     components:{
@@ -92,7 +93,7 @@ export default {
 
             //分页参数实例
             pageInstance: {
-                total: null,
+                total: 0,
                 current: 1,
                 size: 15,
             }
@@ -150,9 +151,9 @@ export default {
                 })
             }
         },
-        editorHtml(value){
+        makeComment(value){
             this.clickButtonStatus = true
-            if(value === '<p><br></p>' || value === null || value === ''){
+            if(value === null || value === ''){
                 ElMessage({type: 'warning', message: '不能提交空白哦 ˋ( ° ▽、° )'})
                 this.clickButtonStatus = false
                 return 
@@ -207,6 +208,44 @@ export default {
         currentPageChange(e){
             this.requestInstance.pageNum = e
             this.mainGetComment()
+        },
+        deleteArtComment(commentId){
+            ElMessageBox.confirm('确定要删除评论吗？', '提示', {confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'}).then(() => {
+                let data = new FormData()
+                data.append('articleId', this.$route.query.id)
+                data.append('commentId', commentId)
+                deleteComment(data).then(resq => {
+                    if(resq.code === 200) {
+                        ElMessage({type: 'success', message: resq.message})
+                        this.commentList.splice(this.commentList.findIndex(item => item.commentId === commentId), 1)
+                    } else {
+                        ElMessage({type: 'error', message: resq.message})
+                    }
+                }).catch(err => {
+                    ElMessage({type: 'error', message: err.message})
+                })
+            }).catch(() => {})
+        },
+        likeArtComment(commentId){
+            let data = new FormData()
+            data.append('articleId', this.$route.query.id)
+            data.append('commentId', commentId)
+            likeComment(data).then(resq => {
+                if(resq.code === 200){
+                    ElMessage({type: 'success', message: resq.message})
+                    let index = this.commentList.findIndex(item => item.commentId === commentId)
+                    if(resq.data.status){
+                        this.commentList[index].likes++
+                    } else {
+                        this.commentList[index].likes--
+                    }
+                    this.commentList[index].isLike = resq.data.status
+                } else {
+                    ElMessage({type: 'error', message: resq.message})
+                }
+            }).catch(err => {
+                ElMessage({type: 'error', message: err.message})
+            })
         }
     }
 }
@@ -367,11 +406,25 @@ export default {
                     transition: color 0.3s;
                 }
             }
+            .list-move , .list-enter-active , .list-leave-active
+            {
+                transition: all 0.3s ease-in-out;
+            }
+            .list-enter-from , .list-leave-to
+            {
+                opacity: 0;
+                transform: translateY(2rem);
+            }
+            .list-leave-active
+            {
+                position: absolute;
+            }
         }
     }
     .comment-reply
     {
         width: 100%;
+        z-index: 10;
         position: fixed;
         max-width: 768px;
         height: 25rem;
@@ -382,7 +435,7 @@ export default {
         background-color: #ffffff;
         box-shadow: 0 0 1rem rgba(0, 0, 0, 0.3);
         border-radius: 0.3rem 0.3rem 0 0;
-        transition: transform 0.3s, opacity 0.3s;
+        transition: transform 0.25s ease-out, opacity 0.25s ease-out;
         .comment-title
         {
             width: 100%;

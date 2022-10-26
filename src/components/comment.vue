@@ -6,26 +6,26 @@
                 <div class="vistor-info">
                     <div>
                         <span>{{this.renderData.replyUser.replyNickName}}</span>
-                        <button type="button" @click="clickReply(this.renderData)">回复</button>
+                        <button class="relply-button" type="button" v-if="this.$store.getters.userInfo != null && this.$store.getters.userInfo.uid !== this.renderData.replyUser.replyUserId" @click="clickReply(this.renderData)">回复</button>
+                        <button class="delete-button" type="button" v-if="this.$store.getters.userInfo != null && this.$store.getters.userInfo.uid === this.renderData.replyUser.replyUserId" @click="clickDeleteComment(this.renderData.commentId)">删除</button>
                     </div>
                     <span class="vistor-info-time">{{this.renderData.createTime}}</span>
                 </div>
             </div>
             <div class="comment-top-right">
-                <i class="fas fa-heart" :style="this.renderData.isLike ? 'color: red;':''" @click="clikcLikeComment(this.renderData.articleId, this.renderData.commentId)"/>
+                <i class="fas fa-heart" :style="this.renderData.isLike ? 'color: red;':''" @click="clickLikeComment(this.renderData.commentId)"/>
                 <span>{{this.renderData.likes}}</span>
             </div>
         </div>
-        <div class="comment-content-render editer-render" v-html="this.reRenderContent" />
+        <div class="comment-content-render editor-render" v-html="this.reRenderContent" />
     </div>
 </template>
 <script>
-import { likeComment } from "@/util/article.js"
-import { ElMessage , ElMessageBox } from 'element-plus'
 export default {
     props:{
         renderData: {
-            type: Object
+            type: Object,
+            default: null
         }
     },
     data(){
@@ -40,29 +40,17 @@ export default {
             this.reRenderContent = this.renderData.content
         }
     },
+    mounted(){
+    },
     methods:{
         clickReply(object){
             this.$emit('getReplyUser', object)
         },
-        clikcLikeComment(articleId, commentId){
-            let data = new FormData()
-            data.append('articleId', articleId)
-            data.append('commentId', commentId)
-            likeComment(data).then(resq => {
-                if(resq.code === 200 ){
-                    ElMessage({type: 'success', message: resq.message})
-                    if(resq.data.status){
-                        this.renderData.likes++
-                    } else {
-                        this.renderData.likes--
-                    }
-                    this.renderData.isLike = resq.data.status
-                } else {
-                    ElMessage({type: 'error', message: resq.message})
-                }
-            }).catch(err => {
-                ElMessage({type: 'error', message: err.message})
-            })
+        clickLikeComment(commentId){
+            this.$emit('likeComment', commentId)
+        },
+        clickDeleteComment(commentId){
+            this.$emit('deleteComment', commentId)
         }
     }
 }
@@ -114,12 +102,20 @@ export default {
                     }
                     button
                     {
-                        background-color: #0478be;
+                        
                         font-size: 0.6rem;
                         padding: 0.1rem 0.3rem;
                         cursor: pointer;
                         border-radius: 0.25rem;
                         margin-left: 0.5rem;
+                    }
+                    .relply-button
+                    {
+                        background-color: #0478be;
+                    }
+                    .delete-button
+                    {
+                        background-color: rgb(255, 85, 85);
                     }
                 }
                 .vistor-info-time
@@ -149,7 +145,6 @@ export default {
             {
                 
                 transform: scale(1.2);
-                color: rgb(250, 73, 73);
             }
             span
             {

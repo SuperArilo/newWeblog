@@ -1073,59 +1073,6 @@ ul , li
         opacity: 0;
         transform: translateY(1rem);
     }
-    .editer-render
-    {
-        font-size: 0.7rem !important;
-        blockquote
-        {
-            display: block;
-            padding: 0.15rem 1rem;
-            margin: 0.3rem 0;
-            line-height: 2;
-            font-size: 100%;
-            transition: color 0.3s, background-color 0.3s, border 0.3s;
-        }
-        hr
-        {
-            cursor: pointer;
-            display: block;
-            height: 0;
-            border: 0;
-            margin: 0.6rem 0;
-        }
-        img
-        {
-            height: auto !important;
-            cursor: pointer;
-        }
-        h1 , h2 , h3 , h4 , h5 , p , table , pre
-        {
-            transition: color 0.3s;
-            margin: 0.5rem 0;
-            line-height: 1.5;
-        }
-        th , td , td , table
-        {
-            transition: border 0.3s , background-color 0.3s , color 0.3s;
-        }
-        table
-        {
-            border-collapse: collapse;
-            
-            th , td
-            {
-
-                padding: 0.1rem 0.3rem;
-                min-height: 1.2rem;
-                height: 1.2rem;
-                
-            }
-            th
-            {
-                text-align: center;
-            }
-        }
-    }
     .footer-info
     {
         width: 100%;
@@ -1147,6 +1094,57 @@ ul , li
             }
         }
     }
+}
+.editor-render
+{
+    font-size: 10pt;
+    table {
+        border-collapse: collapse;
+    }
+    table:not([cellpadding]) th,
+    table:not([cellpadding]) td {
+        padding: 0.4rem;
+    }
+    table[border]:not([border="0"]):not([style*="border-width"]) th,
+    table[border]:not([border="0"]):not([style*="border-width"]) td {
+        border-width: 1px;
+    }
+    table[border]:not([border="0"]):not([style*="border-style"]) th,
+    table[border]:not([border="0"]):not([style*="border-style"]) td {
+        border-style: solid;
+    }
+    table[border]:not([border="0"]):not([style*="border-color"]) th,
+    table[border]:not([border="0"]):not([style*="border-color"]) td {
+        border-color: #ccc;
+    }
+    figure {
+        display: table;
+        margin: 1rem auto;
+    }
+    figure figcaption {
+        color: #999;
+        display: block;
+        margin-top: 0.25rem;
+        text-align: center;
+    }
+    hr {
+        border-color: #ccc;
+        border-style: solid;
+        border-width: 1px 0 0 0;
+    }
+    code {
+        background-color: #e8e8e8;
+        border-radius: 3px;
+        padding: 0.1rem 0.2rem;
+    }
+}
+.editor-render:not([dir=rtl]) blockquote{
+    border-left: 2px solid #ccc;
+    padding-left: 1rem;
+}
+.editor-render[dir=rtl] blockquote {
+    border-right: 2px solid #ccc;
+    padding-right: 1rem;
 }
 @media screen and (min-width:1400px)
 {
