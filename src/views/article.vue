@@ -378,7 +378,6 @@ export default {
             .article-vistor-comment-list
             {
                 width: 100%;
-                margin-top: 0.5rem;
                 .empty-list
                 {
                     width: 100%;
