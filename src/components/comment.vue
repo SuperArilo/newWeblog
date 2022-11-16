@@ -184,6 +184,7 @@ export default {
         padding: 0.5rem 1rem;
         min-height: 3rem;
         border-radius: 0.2rem;
+        margin-bottom: 1rem;
     }
     .comment-editor
     {

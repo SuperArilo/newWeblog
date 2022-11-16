@@ -77,6 +77,7 @@ const clickSubmitButton = () => {
 }
 onMounted(() => {
 	tinymce.init({})
+	console.log(tinymce.get(init.selector).editorManager.ThemeManager)
 })
 watch(
 	() => props.isDark, (n, o) => {
